@@ -9,35 +9,32 @@ app.use(express.json());
 app.use(booleanParser());
 app.use(numberParser());
 
-module.exports = {
-  async with(puppeteer) {
-    app.post('/', async (request, response) => {
-      const browser = await puppeteer.launch({
-        headless: true,
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
-      });
-
-      const page = await browser.newPage();
-      await page.goto(`data:text/html,${(request.body).page}`, { waitUntil: 'networkidle0' });
-
-      const res = await page.pdf({ format: 'a4', landscape: false, printBackground: true, ...request.query });
-      await browser.close();
-
-      const { groups: { filename: filename } } = request.query.filename.match(/^(?<filename>.+?)(?:\.pdf)?$/) || { groups: { filename: 'document' } };
-      response.attachment(`${filename}.pdf`);
-      response.send(res);
+export function use(puppeteer) {
+  app.post('/', async (request, response) => {
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
 
-    app.use((err, _, response) => {
-      response.status(500).send(err);
-    });
+    const page = await browser.newPage();
+    await page.goto(`data:text/html,${(request.body).page}`, { waitUntil: 'networkidle0' });
 
-    app.listen(port, (err) => {
-      if (err) {
-        return console.error('ERROR: ', err);
-      }
+    const res = await page.pdf({ format: 'a4', landscape: false, printBackground: true, ...request.query });
+    await browser.close();
 
-      console.log(`HTML to PDF converter listening on port: ${port}`);
-    });
-  }
-};
+    const { groups: { filename } } = (request.query.filename || 'document').match(/^(?<filename>.+?)(?:\.pdf)?$/);
+    response.attachment(`${filename}.pdf`).send(res);
+  });
+
+  app.use((err, _, response) => {
+    response.status(500).send(err);
+  });
+
+  app.listen(port, (err) => {
+    if (err) {
+      return console.error('ERROR: ', err);
+    }
+
+    console.log(`HTML to PDF converter listening on port: ${port}`);
+  });
+}
