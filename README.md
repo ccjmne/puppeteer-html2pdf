@@ -16,10 +16,12 @@ Technologies:
 ## Run it
 
 -   Testing:
+
         docker run -it --rm -p=<port>:3000 puppeteer-html2pdf:<version>
     Kill with: `Ctrl^C`
 
 -   Production:
+
         docker run --detach --shm-size 1G --sysctl net.ipv6.conf.all.disable_ipv6=1 \
                    --name puppeteer-html2pdf -p=<port>:3000 puppeteer-html2pdf:<version>
     Stop with: `docker stop puppeteer-html2pdf`
@@ -32,10 +34,10 @@ Technologies:
 -   `Content-Type`: `application/json`
 -   body: `{ page: <html> }` where `<html>` is a JSON string of the DOM to print
 -   query parameters:
-    -   all the options described in [Puppeteer's page#pdf(\[options\]) method](https://github.com/GoogleChrome/puppeteer/blob/v1.14.0/docs/api.md#pagepdfoptions), except:
+    -   `filename`: the name of the resulting PDF file (will automatically append the `.pdf` extension if absent)
+    -   all the options supported by [Puppeteer's page#pdf(\[options\])](https://github.com/GoogleChrome/puppeteer/blob/v1.14.0/docs/api.md#pagepdfoptions), except:
         -   `headerTemplate`
         -   `margin`
-    -   `filename`: the name of the resulting PDF file (will automatically append the `.pdf` extension if absent)
 
 ## Build
 
