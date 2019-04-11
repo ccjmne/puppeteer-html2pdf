@@ -1,0 +1,29 @@
+{
+  "name": "docker-puppeteer-html2pdf",
+  "version": "0.1.0",
+  "description": "Print your HTML to PDF via Puppeteer in a Docker container. It's all in the repo name 👌",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ccjmne/docker-puppeteer-html2pdf.git"
+  },
+  "keywords": [
+    "html",
+    "pdf",
+    "htmltopdf",
+    "html2pdf",
+    "chrome",
+    "headless",
+    "puppeteer",
+    "docker"
+  ],
+  "author": "Eric NICOLAS <ccjmne@gmail.com> (ccjmne)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ccjmne/docker-puppeteer-html2pdf/issues"
+  },
+  "homepage": "https://github.com/ccjmne/docker-puppeteer-html2pdf#readme"
+}
