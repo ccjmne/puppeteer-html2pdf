@@ -22,7 +22,9 @@ module.exports = {
 
       const res = await page.pdf({ format: 'a4', landscape: false, printBackground: true, ...request.query });
       await browser.close();
-      response.attachment(`${request.query.name || 'document'}.pdf`);
+
+      const { groups: { filename: filename } } = request.query.filename.match(/^(?<filename>.+?)(?:\.pdf)?$/) || { groups: { filename: 'document' } };
+      response.attachment(`${filename}.pdf`);
       response.send(res);
     });
 
