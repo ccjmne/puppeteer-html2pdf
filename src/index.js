@@ -17,7 +17,7 @@ export function use(puppeteer) {
     });
 
     const page = await browser.newPage();
-    await page.goto(`data:text/html,${(request.body).page}`, { waitUntil: 'networkidle0' });
+    await page.setContent(request.body.page, { waitUntil: 'networkidle0' });
 
     const res = await page.pdf({ format: 'a4', landscape: false, printBackground: true, ...request.query });
     await browser.close();
