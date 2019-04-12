@@ -53,6 +53,34 @@ Both methods handle the following query parameters:
     -   `headerTemplate`
     -   `margin`
 
+## Examples
+
+Single-page document, default settings (format: `A4`, orientation: `portrait`):
+
+    curl -X POST \
+      'http://localhost:3000' \
+      -H 'Content-Type: text/html' \
+      -d '<html><body><h1>Hello World!</h1></body></html>'
+
+Single-page document (format: `A3`, orientation: `landscape`)
+
+    curl -X POST \
+      'http://localhost:3000?format=a3&landscape=true' \
+      -H 'Content-Type: text/html' \
+      -d '<html><body><h1>Hello World!</h1></body></html>'
+
+Multi-page document
+
+    curl -X POST \
+      'http://localhost:3000/multiple' \
+      -H 'Content-Type: application/json' \
+      -d '{
+        "pages": [
+            "<html><body><h1>Hello World!</h1></body></html>",
+            "This is the <strong>second</strong> page"
+        ]
+    }'
+
 ## Build
 
 Includes a comprehensive script that lets you build and publish new versions of the image:
