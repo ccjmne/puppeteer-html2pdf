@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const booleanParser = require('express-query-boolean');
 const numberParser = require('express-query-int');
+const cors = require('cors');
 
 const merge = require('pdf-merge');
 const tmp = require('tmp');
@@ -33,7 +34,7 @@ export function use(puppeteer) {
     });
   }
 
-  app.post('/', async (request, response) => {
+  app.post('/', cors(), async (request, response) => {
     const browser = await launchBrowser();
     const { filename, options } = parseRequest(request);
     const res = await print({ htmlContents: request.body, browser, options });
@@ -41,7 +42,7 @@ export function use(puppeteer) {
     response.attachment(`${filename}.pdf`).send(res);
   });
 
-  app.post('/multiple', async (request, response) => {
+  app.post('/multiple', cors(), async (request, response) => {
     const browser = await launchBrowser();
     const { filename, options } = parseRequest(request);
     const files = await Promise.all(request.body.pages.map(htmlContents => {
@@ -54,6 +55,8 @@ export function use(puppeteer) {
     await browser.close();
     response.attachment(`${filename}.pdf`).send(res);
   });
+
+  app.options('/*', cors());
 
   app.use((err, _, response) => {
     response.status(500).send(err);
