@@ -4,7 +4,7 @@ const booleanParser = require('express-query-boolean');
 const numberParser = require('express-query-int');
 const cors = require('cors');
 
-const merge = require('pdf-merge');
+const pdf = require('pdfjs');
 const tmp = require('tmp');
 
 const app = express();
@@ -50,10 +50,15 @@ export function use(puppeteer) {
       return print({ htmlContents, browser, options: { ...options, path: path } }).then(() => ({ path, rm }));
     }));
 
-    const res = await merge(files.map(({ path }) => path), { oupput: 'Stream' });
-    files.forEach(({ rm }) => rm());
+    const res = files.reduce((merged, { path, rm }) => {
+      merged.addPagesOf(new pdf.ExternalDocument(fs.readFileSync(path)));
+      rm();
+      return merged;
+    }, new pdf.Document());
+
     await browser.close();
-    response.attachment(`${filename}.pdf`).send(res);
+    const buffer = await res.asBuffer();
+    response.attachment(`${filename}.pdf`).send(buffer);
   });
 
   app.options('/*', cors());
