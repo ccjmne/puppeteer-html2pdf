@@ -6,7 +6,7 @@ WORKDIR /app
 RUN apt-get update -y && apt-get install -y pdftk
 
 # https://github.com/Yelp/dumb-init
-RUN wget https://github.com/Yelp/dumb-init/releases/download/v1.2.2/dumb-init_1.2.2_amd64.deb
+RUN wget https://github.com/Yelp/dumb-init/releases/download/v1.2.4/dumb-init_1.2.4_amd64.deb
 RUN dpkg -i dumb-init_*.deb && rm -f dumb-init_*.deb
 
 COPY dist/server.js .
