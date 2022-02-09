@@ -1,8 +1,7 @@
 FROM buildkite/puppeteer:latest
 
 # https://github.com/Yelp/dumb-init
-RUN wget https://github.com/Yelp/dumb-init/releases/download/v1.2.4/dumb-init_1.2.4_amd64.deb
-RUN dpkg -i dumb-init_*.deb && rm -f dumb-init_*.deb
+RUN apt-get update && apt-get install -y dumb-init
 
 WORKDIR /app/build
 ADD . .
