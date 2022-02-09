@@ -28,9 +28,9 @@ jobs:
         name: Login to GitHub Container Registry
         uses: docker/login-action@v1
         with:
-          registry: ghcr.io # GitHub Container Registry (GH Packages for Docker)
-          username: ${{ secrets.GHCR_USERNAME }}
-          password: ${{ secrets.GHCR_PASSWORD }}
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       -
         name: Retrieve version tag
         # See https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#release
@@ -44,4 +44,6 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: puppeteer-html2pdf:${{ env.TAG_VERSION }},ghcr.io/ccjmne/puppeteer-html2pdf:${{ env.TAG_VERSION }}
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:${{ env.TAG_VERSION }}
+            ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:latest
