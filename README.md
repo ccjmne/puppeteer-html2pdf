@@ -2,7 +2,9 @@
 
 Print your HTML to PDF via Puppeteer in a Docker container.
 
-## What exactly
+[![Docker Image CI](https://github.com/ccjmne/puppeteer-html2pdf/actions/workflows/publish-to-ghcr.yml/badge.svg)](https://github.com/ccjmne/puppeteer-html2pdf/actions/workflows/publish-to-ghcr.yml)
+
+## Inside the box
 
 This is a simple [Express](https://expressjs.com/) server listening for `POST` requests passing some custom HTML to print as PDF for generating fancy reports.
 
