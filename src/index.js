@@ -10,7 +10,7 @@ const tmp = require('tmp');
 const app = express();
 const port = 3000;
 
-app.use(express.json());
+app.use(express.json({ limit: '1mb' }));
 app.use(bodyParser.text({ type: 'text/html' }));
 app.use(booleanParser());
 app.use(numberParser());
