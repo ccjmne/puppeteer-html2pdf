@@ -21,34 +21,34 @@ As a webserver, on the port of your choosing.
 
 - Testing:
 
-      docker run -it --rm -p=<port>:3000 ccjmne/puppeteer-html2pdf:<version>
+```sh
+docker run -it --rm -p=<port>:3000 ghcr.io/ccjmne/puppeteer-html2pdf:<version>
+```
 
-  Kill with: `Ctrl^C`
+Kill with: `Ctrl^C`
 
 - Production:
 
-      docker run --detach --shm-size 1G --sysctl net.ipv6.conf.all.disable_ipv6=1 \
-                 --name html2pdf -p=<port>:3000 ccjmne/puppeteer-html2pdf:<version>
+```sh
+docker run --name html2pdf --detach -p=<port>:3000 \
+           --shm-size 1G --sysctl net.ipv6.conf.all.disable_ipv6=1 \
+           ghcr.io/ccjmne/puppeteer-html2pdf:<version>
+```
 
-  Stop with: `docker stop html2pdf`
+Stop with: `docker stop html2pdf`
 
 ## Use it
 
 The webserver listens on the port (specified in the [Run it](#run-it) section) and exposes two endpoints:
 
-1. Single-page document
+Single-page document, default settings (format: `A4`, orientation: `portrait`):
 
-   - path: `/`
-   - method: `POST`
-   - `Content-Type`: `text/html`
-   - body: `<html content>`
-
-2. Multi-page document
-
-   - path: `/multiple`
-   - method: `POST`
-   - `Content-Type`: `application/json`
-   - body: `{ pages: [<html 1>, <html 2>, ... <html n>] }` where `<html x>` are JSON strings of the DOMs to print
+|                       | Single-page document    | Multi-page document                                  |
+| --------------------- | ----------------------- | ---------------------------------------------------- |
+| Request Path          | `/`                     | `/multiple`                                          |
+| Request Method        | `POST`                  | `POST`                                               |
+| `Content-Type` header | `text/html`             | `application/json`                                   |
+| Request Body          | `<h1>Hello World!</h1>` | `{ pages: ["<h1>Page 1</h2>", "<h1>Page 2</h1>" ] }` |
 
 Both methods handle the following query parameters:
 
@@ -69,7 +69,7 @@ curl -X POST \
   -d '<html><body><h1>Hello World!</h1></body></html>'
 ```
 
-Single-page document (format: `A3`, orientation: `landscape`)
+Single-page document (format: `A3`, orientation: `landscape`):
 
 ```bash
 curl -X POST \
@@ -78,7 +78,7 @@ curl -X POST \
   -d '<html><body><h1>Hello World!</h1></body></html>'
 ```
 
-Multi-page document
+Multi-page document:
 
 ```bash
 curl -X POST \
@@ -94,7 +94,7 @@ curl -X POST \
 
 ## Build
 
-Builds automatically when pushed onto `master` branch.
+**Automatically builds and publishes to GitHub Packages** (GitHub Container Registry) with each **GitHub Release**.
 
 ~~Includes a comprehensive script that lets you build and publish new versions of the image: `./compose.sh <version>`~~
 
