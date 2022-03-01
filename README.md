@@ -37,6 +37,12 @@ docker run --name html2pdf --detach -p=<port>:3000 \
 
 Stop with: `docker stop html2pdf`
 
+## Docker Environment Variables
+
+| Name       | Description                                                                                                               | Default Value |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| BODY_LIMIT | Maximum request body size. Passed on to [body-parser](https://github.com/expressjs/body-parser#limit) and `express.json`. | `1mb`         |
+
 ## Use it
 
 The webserver listens on the port (specified in the [Run it](#run-it) section) and exposes two endpoints:
