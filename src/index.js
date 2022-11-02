@@ -8,7 +8,7 @@ const pdf = require('pdfjs');
 const tmp = require('tmp');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 const limit = process.env.BODY_LIMIT || '1mb';
 
