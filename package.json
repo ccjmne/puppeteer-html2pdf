@@ -27,16 +27,16 @@
   },
   "homepage": "https://github.com/ccjmne/puppeteer-html2pdf#readme",
   "dependencies": {
-    "body-parser": "^1.19.2",
+    "body-parser": "^1.20.2",
     "cors": "^2.8.5",
-    "express": "^4.17.3",
+    "express": "^4.18.2",
     "express-query-boolean": "^2.0.0",
     "express-query-int": "^3.0.0",
-    "pdfjs": "^2.4.7",
+    "pdfjs": "^2.5.0",
     "tmp": "^0.2.1"
   },
   "devDependencies": {
-    "webpack": "^5.69.1",
-    "webpack-cli": "^4.9.2"
+    "webpack": "^5.88.1",
+    "webpack-cli": "^5.1.4"
   }
 }
