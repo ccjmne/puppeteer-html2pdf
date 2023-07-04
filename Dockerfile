@@ -14,4 +14,4 @@ EXPOSE 3000
 
 ENTRYPOINT ["dumb-init", "--"]
 
-CMD ["node", "-e", "require('./dist/server.js').use(require('puppeteer'))"]
+CMD ["node", "-e", "require('./dist/server.js').use(require('puppeteer-core'))"]

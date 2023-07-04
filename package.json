@@ -33,6 +33,7 @@
     "express-query-boolean": "^2.0.0",
     "express-query-int": "^3.0.0",
     "pdfjs": "^2.5.0",
+    "puppeteer-core": "^20.7.4",
     "tmp": "^0.2.1"
   },
   "devDependencies": {
