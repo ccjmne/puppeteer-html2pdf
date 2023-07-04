@@ -1,6 +1,6 @@
 {
   "name": "puppeteer-html2pdf",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Print your HTML to PDF via Puppeteer in a Docker container. It's all in the repo name 👌",
   "main": "src/index.js",
   "scripts": {
