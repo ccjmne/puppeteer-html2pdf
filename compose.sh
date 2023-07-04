@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /bin/bash
 set -e
 
 ok() { printf "   [\e[0;32m ok \e[0m] $1\n"; }
