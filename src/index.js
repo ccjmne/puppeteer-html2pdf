@@ -31,7 +31,7 @@ function parseRequest(request) {
 export function use(puppeteer) {
   function launchBrowser() {
     return puppeteer.launch({
-      headless: true,
+      headless: 'new',
       args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
   }
