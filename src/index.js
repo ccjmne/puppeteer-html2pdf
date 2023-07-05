@@ -31,6 +31,7 @@ function parseRequest(request) {
 export function use(puppeteer) {
   function launchBrowser() {
     return puppeteer.launch({
+      executablePath: '/usr/bin/google-chrome',
       headless: 'new',
       args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
