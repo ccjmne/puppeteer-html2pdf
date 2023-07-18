@@ -24,14 +24,16 @@ async function print({ browser, htmlContents, options }) {
 }
 
 function parseRequest(request) {
-  const { groups: { filename } } = (request.query.filename || 'document').match(/^(?<filename>.+?)(?:\.pdf)?$/);
-  return { filename, options: { format: 'a4', landscape: false, printBackground: true, ...request.query, path: null } }; // discard potential `path` parameter
+  return {
+    filename: (request.query.filename || 'document').replace(/(\.pdf)?$/, '.pdf'),                    // add .pdf extension if necessary
+    options: { format: 'a4', landscape: false, printBackground: true, ...request.query, path: null }  // discard potential `path` parameter
+  };
 }
 
 export function use(puppeteer) {
   function launchBrowser() {
     return puppeteer.launch({
-      executablePath: '/usr/bin/google-chrome',
+      executablePath: 'google-chrome-stable',
       headless: 'new',
       args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
@@ -48,7 +50,7 @@ export function use(puppeteer) {
   app.post('/multiple', cors(), async (request, response) => {
     const browser = await launchBrowser();
     const { filename, options } = parseRequest(request);
-    const files = await Promise.all(request.body.pages.map(htmlContents => {
+    const files = await Promise.all(request.body.map(htmlContents => {
       const { name: path, removeCallback: rm } = tmp.fileSync();
       return print({ htmlContents, browser, options: { ...options, path: path } }).then(() => ({ path, rm }));
     }));
@@ -61,7 +63,7 @@ export function use(puppeteer) {
 
     await browser.close();
     const buffer = await res.asBuffer();
-    response.attachment(`${filename}.pdf`).send(buffer);
+    response.attachment(filename).send(buffer);
   });
 
   app.options('/*', cors());

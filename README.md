@@ -21,7 +21,7 @@ As a webserver, on the port of your choosing.
 
 - Testing:
 
-```sh
+```shell
 docker run -it --rm -p=<port>:3000 ghcr.io/ccjmne/puppeteer-html2pdf:<version>
 ```
 
@@ -29,7 +29,7 @@ Kill with: `Ctrl^C`
 
 - Production:
 
-```sh
+```shell
 docker run --name html2pdf --detach -p=<port>:3000 \
            --shm-size 1G --sysctl net.ipv6.conf.all.disable_ipv6=1 \
            ghcr.io/ccjmne/puppeteer-html2pdf:<version>
@@ -49,12 +49,13 @@ The webserver listens on the port (specified in the [Run it](#run-it) section) a
 
 Single-page document, default settings (format: `A4`, orientation: `portrait`):
 
-|                       | Single-page document    | Multi-page document                                  |
-| --------------------- | ----------------------- | ---------------------------------------------------- |
-| Request Path          | `/`                     | `/multiple`                                          |
-| Request Method        | `POST`                  | `POST`                                               |
-| `Content-Type` header | `text/html`             | `application/json`                                   |
-| Request Body          | `<h1>Hello World!</h1>` | `{ pages: ["<h1>Page 1</h2>", "<h1>Page 2</h1>" ] }` |
+|                        | Single-page document    | Multi-page document                       |
+| ---------------------- | ----------------------- | ----------------------------------------- |
+| Request Path           | `/`                     | `/multiple`                               |
+| Request Method         | `POST`                  | `POST`                                    |
+| `Content-Type` header  | `text/html`             | `application/json`                        |
+| Request Body           | HTML content            | JSON array of strings containing HTML     |
+| Request Body (example) | `<h1>Hello World!</h1>` | `["<h1>Page 1</h2>", "<h1>Page 2</h1>" ]` |
 
 Both methods handle the following query parameters:
 
@@ -63,6 +64,29 @@ Both methods handle the following query parameters:
   - `path`
   - `headerTemplate`
   - `margin`
+
+## Changes from version 1.x.x
+
+The `/multiple` endpoint used to expect the request body to be a JSON object with a single `pages` property that would map to a JSON array of strings containing your HTML content for each page to be printed.  
+That endpoint now expects the JSON array directly.
+
+- version 1.x.x
+  ```json
+  {
+    "pages": [
+      "<h1>First Page</h1>",
+      "<h1>Second Page</h1>"
+    ]
+  }
+  ```
+
+- version 2.x.x
+  ```json
+  [
+    "<h1>First Page</h1>",
+    "<h1>Second Page</h1>"
+  ]
+  ```
 
 ## Examples
 
@@ -90,13 +114,16 @@ Multi-page document:
 curl -X POST \
   'http://localhost:3000/multiple' \
   -H 'Content-Type: application/json' \
-  -d '{
-    "pages": [
-        "<html><body><h1>Hello World!</h1></body></html>",
-        "This is the <strong>second</strong> page"
-    ]
-}'
+  -d '[
+    "<html><body><h1>Hello World!</h1></body></html>",
+    "This is the <strong>second</strong> page"
+  ]'
 ```
+
+## TODO
+
+1. Better handle errors.
+2. Set up a way to configure endpoints that will inject custom CSS styles in each page.
 
 ## Build
 
