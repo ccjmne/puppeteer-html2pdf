@@ -1,6 +1,6 @@
 {
   "name": "puppeteer-html2pdf",
-  "version": "1.5.2",
+  "version": "2.0.0",
   "description": "Print your HTML to PDF via Puppeteer in a Docker container. It's all in the repo name 👌",
   "main": "src/index.js",
   "scripts": {
@@ -33,11 +33,11 @@
     "express-query-boolean": "^2.0.0",
     "express-query-int": "^3.0.0",
     "pdfjs": "^2.5.0",
-    "puppeteer-core": "^20.7.4",
+    "puppeteer-core": "^20.8.3",
     "tmp": "^0.2.1"
   },
   "devDependencies": {
-    "webpack": "^5.88.1",
+    "webpack": "^5.88.2",
     "webpack-cli": "^5.1.4"
   }
 }
