@@ -32,12 +32,12 @@
     "express": "^4.18.2",
     "express-query-boolean": "^2.0.0",
     "express-query-int": "^3.0.0",
-    "pdfjs": "^2.5.0",
-    "puppeteer-core": "^20.8.3",
+    "pdfjs": "^2.5.2",
+    "puppeteer-core": "^21.5.2",
     "tmp": "^0.2.1"
   },
   "devDependencies": {
-    "webpack": "^5.88.2",
+    "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4"
   }
 }
