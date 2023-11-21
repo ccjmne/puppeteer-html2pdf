@@ -1,10 +1,14 @@
-FROM ghcr.io/puppeteer/puppeteer:latest
+# See https://stackoverflow.com/a/72291691/2427596
+FROM node:current-alpine
+
 LABEL org.opencontainers.image.source https://github.com/ccjmne/puppeteer-html2pdf
 
 USER root
 
+RUN apk add chromium
+
 # https://github.com/Yelp/dumb-init
-RUN apt-get update && apt-get install -y dumb-init
+RUN apk update && apk add dumb-init
 
 WORKDIR /app
 ADD . .

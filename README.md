@@ -15,6 +15,8 @@ Technologies used:
 - [Express](https://expressjs.com/)
 - [NodeJS](https://nodejs.org/en/)
 
+It offers images for both ARM and AMD architectures.
+
 ## Run it
 
 As a webserver, on the port of your choosing.
