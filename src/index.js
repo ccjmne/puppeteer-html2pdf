@@ -44,7 +44,7 @@ export function use(puppeteer) {
     const { filename, options } = parseRequest(request);
     const res = await print({ htmlContents: request.body, browser, options });
     await browser.close();
-    response.attachment(`${filename}`).send(res);
+    response.attachment(filename.replace(/(?:\.pdf)?$/, '.pdf')).send(res);
   });
 
   app.post('/multiple', cors(), async (request, response) => {
