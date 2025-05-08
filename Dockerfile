@@ -1,7 +1,7 @@
 # See https://stackoverflow.com/a/72291691/2427596
 FROM node:current-alpine
 
-LABEL org.opencontainers.image.source https://github.com/ccjmne/puppeteer-html2pdf
+LABEL org.opencontainers.image.source=https://github.com/ccjmne/puppeteer-html2pdf
 
 USER root
 
