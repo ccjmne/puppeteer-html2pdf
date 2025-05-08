@@ -34,13 +34,17 @@ function parseRequest(query) {
   }
 }
 
-let _browser = null
+// TODO: Avoid launching multiple browsers if several requests happen at the same time, on spawn
+let _browser
 async function launchBrowser() {
-  return _browser |= puppeteer.launch({
-    executablePath: '/usr/bin/chromium',
-    headless: 'new',
-    args: ['--no-sandbox', '--disable-setuid-sandbox']
-  })
+  if (!_browser) {
+    _browser = await puppeteer.launch({
+      executablePath: '/usr/bin/chromium',
+      headless: 'new',
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    })
+  }
+  return _browser
 }
 
 app.post('/', cors(), async (req, res) => {
