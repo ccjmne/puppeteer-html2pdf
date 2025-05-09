@@ -4,8 +4,8 @@ import bodyParser from 'body-parser'
 import cors from 'cors'
 import express from 'express'
 import pdf from 'pdfjs'
-import puppeteer from 'puppeteer-core'
 import tmp from 'tmp'
+import { withBrowser } from './shared-browser'
 
 const app = express()
 const port = 3000
@@ -35,40 +35,30 @@ function parseRequest(query) {
   }
 }
 
-// TODO: Avoid launching multiple browsers if several requests happen at the same time, on spawn
-let _browser
-async function launchBrowser() {
-  if (!_browser) {
-    _browser = await puppeteer.launch({
-      executablePath: '/usr/bin/chromium',
-      headless: 'new',
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
-    })
-  }
-  return _browser
-}
-
 app.post('/', cors(), async (req, res) => {
-  const browser = await launchBrowser()
   const { filename, options } = parseRequest(req.query)
-  const page = await print({ htmlContents: req.body, browser, options })
-  res.attachment(filename.replace(/(?:\.pdf)?$/, '.pdf')).send(page)
+  withBrowser(async (browser) => {
+    const page = await print({ htmlContents: req.body, browser, options })
+    res.attachment(filename.replace(/(?:\.pdf)?$/, '.pdf')).send(page)
+  })
 })
 
 app.post('/multiple', cors(), async (req, res) => {
-  const browser = await launchBrowser()
   const { filename, options } = parseRequest(req.query)
-  const files = await Promise.all(req.body.map(htmlContents => {
-    const { name: path, removeCallback: rm } = tmp.fileSync()
-    return print({ htmlContents, browser, options: { ...options, path: path } }).then(() => ({ path, rm }))
-  }))
-  const doc = files.reduce((merged, { path, rm }) => {
-    merged.addPagesOf(new pdf.ExternalDocument(fs.readFileSync(path)))
-    rm()
-    return merged
-  }, new pdf.Document())
-  const buffer = await doc.asBuffer()
-  res.attachment(filename).send(buffer)
+  withBrowser(async (browser) => {
+    const files = await Promise.all(req.body.map(async (htmlContents) => {
+      const { name: path, removeCallback: rm } = tmp.fileSync()
+      await print({ htmlContents, browser, options: { ...options, path } })
+      return { path, rm }
+    }))
+    const doc = files.reduce((merged, { path, rm }) => {
+      merged.addPagesOf(new pdf.ExternalDocument(fs.readFileSync(path)))
+      rm()
+      return merged
+    }, new pdf.Document())
+    const buffer = await doc.asBuffer()
+    res.attachment(filename).send(buffer)
+  })
 })
 
 app.options('/{*anything}', cors())
