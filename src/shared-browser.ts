@@ -17,7 +17,7 @@ const browser$ = (function sharedBrowser(): Observable<Browser> {
             args: ['--no-sandbox', '--disable-setuid-sandbox'],
             headless: true,
           }))
-        : of(null).pipe(delay(5 * 60 * 1000), tap(() => latest?.close()))
+        : of(null).pipe(delay(30 * 1000), tap(() => latest?.close()))
     }),
   ).subscribe(instance$)
   return new Observable<Browser>((observer) => {
