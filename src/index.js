@@ -1,7 +1,8 @@
+import fs from 'node:fs'
+import process from 'node:process'
 import bodyParser from 'body-parser'
 import cors from 'cors'
 import express from 'express'
-import fs from 'fs'
 import pdf from 'pdfjs'
 import puppeteer from 'puppeteer-core'
 import tmp from 'tmp'
@@ -24,13 +25,13 @@ function parseRequest(query) {
   // Parse all the parameters to Page#pdf that cannot accept strings
   // See https://pptr.dev/api/puppeteer.pdfoptions
   const sanitised = Object.fromEntries(Object.entries(query).map(([k, v]) => {
-    if (['displayHeaderFooter', 'landscape', 'omitBackground', 'outline', 'preferCSSPageSize', 'printBackground', 'tagged', 'waitForFonts'].includes(k)) return [k, v === 'true']
-    if (['scale', 'timeout'].includes(k)) return [k, +v]
+    if (['displayHeaderFooter', 'landscape', 'omitBackground', 'outline', 'preferCSSPageSize', 'printBackground', 'tagged', 'waitForFonts'].includes(k)) { return [k, v === 'true'] }
+    if (['scale', 'timeout'].includes(k)) { return [k, +v] }
     return [k, v]
   }))
   return {
     filename: (sanitised.filename || 'document').replace(/(\.pdf)?$/, '.pdf'),
-    options: { format: 'a4', landscape: false, printBackground: true, ...sanitised, path: null }
+    options: { format: 'a4', landscape: false, printBackground: true, ...sanitised, path: null },
   }
 }
 
@@ -72,24 +73,12 @@ app.post('/multiple', cors(), async (req, res) => {
 
 app.options('/{*anything}', cors())
 
-/**
-  * Error-handling middleware always takes **four** arguments.
-  *
-  * You must provide four arguments to identify it as an error-handling middleware function.
-  * Even if you don’t need to use the next object, you must specify it to maintain the signature.
-  * Otherwise, the next object will be interpreted as regular middleware and will fail to handle errors.
-  * For details about error-handling middleware, see: https://expressjs.com/en/guide/error-handling.html.
-  */
-  app.use((err, _req, res, next) => {
-    if (res.headersSent) {
-      return next(err)
-    }
-    res.status(500).send(err.stack)
-  })
+app.use((err, _req, res, next) => {
+  if (res.headersSent) { return next(err) }
+  res.status(500).send(err.stack)
+})
 
-app.listen(port, err => {
-  if (err) {
-    return console.error('ERROR: ', err)
-  }
+app.listen(port, (err) => {
+  if (err) { return console.error('ERROR: ', err) }
   console.log(`HTML to PDF converter listening on port: ${port}`)
 })
