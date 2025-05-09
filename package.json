@@ -24,6 +24,10 @@
     "docker"
   ],
   "main": "src/index.ts",
+  "scripts": {
+    "lint": "eslint",
+    "lint:fix": "eslint --fix"
+  },
   "dependencies": {
     "body-parser": "^2.2.0",
     "cors": "^2.8.5",
