@@ -3,6 +3,7 @@ import puppeteer from 'puppeteer-core'
 import { BehaviorSubject, firstValueFrom, from, Observable, of, Subject } from 'rxjs'
 import { delay, distinctUntilChanged, filter, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators'
 
+// This is a shared browser instance that is created on demand and closed after 30 seconds of inactivity.
 const browser$ = (function sharedBrowser(): Observable<Browser> {
   const request$ = new Subject<boolean>()
   const instance$ = new BehaviorSubject<Browser | null>(null)
