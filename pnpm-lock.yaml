@@ -26,9 +26,6 @@ importers:
       rxjs:
         specifier: ^7.8.2
         version: 7.8.2
-      tmp:
-        specifier: ^0.2.3
-        version: 0.2.3
       tsx:
         specifier: ^4.19.4
         version: 4.19.4
@@ -45,9 +42,6 @@ importers:
       '@types/express':
         specifier: ^5.0.1
         version: 5.0.1
-      '@types/tmp':
-        specifier: ^0.2.6
-        version: 0.2.6
       eslint:
         specifier: ^9.26.0
         version: 9.26.0
@@ -476,9 +470,6 @@ packages:
 
   '@types/serve-static@1.15.7':
     resolution: {integrity: sha512-W8Ym+h8nhuRwaKPaDw34QUkwsGi6Rc4yYqvKFo5rm2FUEhCFbzVWrxXUxuKK8TASjWsysJY0nsmNCGhCOIsrOw==}
-
-  '@types/tmp@0.2.6':
-    resolution: {integrity: sha512-chhaNf2oKHlRkDGt+tiKE2Z5aJ6qalm7Z9rlLdBwmOiAAf09YQvvoLXjWK4HWPF1xU/fqvMgfNfpVoBscA/tKA==}
 
   '@types/unist@3.0.3':
     resolution: {integrity: sha512-ko/gIFJRv177XgZsZcBwnqJN5x/Gien8qNOn0D5bQU/zAzVf9Zt3BlcUiLqhV9y4ARk0GbT3tnUiPNgnTXzc/Q==}
@@ -2069,10 +2060,6 @@ packages:
     resolution: {integrity: sha512-mEwzpUgrLySlveBwEVDMKk5B57bhLPYovRfPAXD5gA/98Opn0rCDj3GtLwFvCvH5RK9uPCExUROW5NjDwvqkxw==}
     engines: {node: '>=12.0.0'}
 
-  tmp@0.2.3:
-    resolution: {integrity: sha512-nZD7m9iCPC5g0pYmcaxogYKggSfLsdxl8of3Q/oIbqCqLLIO9IAF0GWjX1z9NZRHPiXv8Wex4yDCaZsgEw0Y8w==}
-    engines: {node: '>=14.14'}
-
   to-regex-range@5.0.1:
     resolution: {integrity: sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==}
     engines: {node: '>=8.0'}
@@ -2652,8 +2639,6 @@ snapshots:
       '@types/http-errors': 2.0.4
       '@types/node': 22.15.17
       '@types/send': 0.17.4
-
-  '@types/tmp@0.2.6': {}
 
   '@types/unist@3.0.3': {}
 
@@ -4544,8 +4529,6 @@ snapshots:
     dependencies:
       fdir: 6.4.4(picomatch@4.0.2)
       picomatch: 4.0.2
-
-  tmp@0.2.3: {}
 
   to-regex-range@5.0.1:
     dependencies:
