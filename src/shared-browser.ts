@@ -9,15 +9,15 @@ const browser$ = (function sharedBrowser(): Observable<Browser> {
   request$.asObservable().pipe(
     distinctUntilChanged(),
     withLatestFrom(instance$),
-    switchMap(([need, latest]) => {
-      if (need ? !!latest : !latest /* !XOR */) { return of(latest) }
-      return need
+    switchMap(([requested, instance]) => {
+      if (requested ? !!instance : !instance /* !XOR */) { return of(instance) }
+      return requested
         ? from(puppeteer.launch({
             executablePath: '/usr/bin/chromium',
             args: ['--no-sandbox', '--disable-setuid-sandbox'],
             headless: true,
           }))
-        : of(null).pipe(delay(30 * 1000), tap(() => latest?.close()))
+        : of(null).pipe(delay(30 * 1000), tap(() => instance?.close()))
     }),
   ).subscribe(instance$)
   return new Observable<Browser>((observer) => {

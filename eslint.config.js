@@ -6,5 +6,6 @@ export default antfu({
   rules: {
     'no-console': 'off',
     'style/max-statements-per-line': ['error', { max: 2 }],
+    'no-sequences': 'off',
   },
 })
