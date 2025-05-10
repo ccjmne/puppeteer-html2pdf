@@ -1,4 +1,4 @@
-import type { NextFunction, Request, Response } from 'express'
+import type { Request, Response } from 'express'
 import type { PDFOptions } from 'puppeteer-core/lib/types'
 import process from 'node:process'
 import bodyParser from 'body-parser'
@@ -24,10 +24,6 @@ express()
     res.attachment(filename.replace(/(?:\.pdf)?$/, '.pdf')).send(await doc.asBuffer())
   })
   .options('/{*anything}', cors())
-  .use((err: Error, _req: Request, res: Response, next: NextFunction) => {
-    if (res.headersSent) { return next(err) }
-    res.status(500).send(err.stack)
-  })
   .listen(port, (err?: Error) => {
     if (err) { return console.error('ERROR: ', err) }
     console.log(`HTML to PDF converter listening on port: ${port}`)
