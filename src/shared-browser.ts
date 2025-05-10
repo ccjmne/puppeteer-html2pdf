@@ -1,7 +1,10 @@
 import type { Browser, PDFOptions } from 'puppeteer-core'
+import process from 'node:process'
 import puppeteer from 'puppeteer-core'
 import { BehaviorSubject, firstValueFrom, from, Observable, of, Subject } from 'rxjs'
 import { delay, distinctUntilChanged, filter, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators'
+
+const keepalive = +(process.env.BROWSER_KEEPALIVE || '30000')
 
 // This is a shared browser instance that is created on demand and closed after 30 seconds of inactivity.
 const browser$ = (function sharedBrowser(): Observable<Browser> {
@@ -18,7 +21,7 @@ const browser$ = (function sharedBrowser(): Observable<Browser> {
             args: ['--no-sandbox', '--disable-setuid-sandbox'],
             headless: true,
           }))
-        : of(null).pipe(delay(30 * 1000), tap(() => instance?.close()))
+        : of(null).pipe(delay(keepalive), tap(() => instance?.close()))
     }),
   ).subscribe(instance$)
   return new Observable<Browser>((observer) => {

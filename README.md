@@ -41,9 +41,10 @@ Stop with: `docker stop html2pdf`
 
 ## Docker Environment Variables
 
-| Name       | Description                                                                                                               | Default Value |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| BODY_LIMIT | Maximum request body size. Passed on to [body-parser](https://github.com/expressjs/body-parser#limit) and `express.json`. | `1mb`         |
+| Name              | Description                                                                                                               | Default Value |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| BODY_LIMIT        | Maximum request body size. Passed on to [body-parser](https://github.com/expressjs/body-parser#limit) and `express.json`. | `1mb`         |
+| BROWSER_KEEPALIVE | Period (in ms) of inactivity after which the shared browser instance is shut down.                                        | `30000` (30s) |
 
 ## Use it
 
