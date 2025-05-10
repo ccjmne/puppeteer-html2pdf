@@ -7,37 +7,31 @@ import express from 'express'
 import { Document, ExternalDocument } from 'pdfjs'
 import { print } from './shared-browser'
 
-const app = express()
 const port = 3000
-
 const limit = process.env.BODY_LIMIT || '1mb'
 
-app.use(express.json({ limit }))
-app.use(bodyParser.text({ type: 'text/html', limit }))
-
-app.post('/', cors(), async (req: Request, res: Response) => {
-  const { filename, opts } = parseRequest(req.query as Record<string, string>)
-  res.attachment(filename.replace(/(?:\.pdf)?$/, '.pdf')).send((await print(req.body, opts)))
-})
-
-app.post('/multiple', cors(), async (req: Request, res: Response) => {
-  const { filename, opts } = parseRequest(req.query as Record<string, string>)
-  const pages = await Promise.all((req.body as string[]).map(html => print(html, { ...opts })))
-  const doc = pages.reduce((merged, content) => (merged.addPagesOf(new ExternalDocument(content)), merged), new Document())
-  res.attachment(filename.replace(/(?:\.pdf)?$/, '.pdf')).send(await doc.asBuffer())
-})
-
-app.options('/{*anything}', cors())
-
-app.use((err: Error, _req: Request, res: Response, next: NextFunction) => {
-  if (res.headersSent) { return next(err) }
-  res.status(500).send(err.stack)
-})
-
-app.listen(port, (err?: Error) => {
-  if (err) { return console.error('ERROR: ', err) }
-  console.log(`HTML to PDF converter listening on port: ${port}`)
-})
+express()
+  .use(express.json({ limit }))
+  .use(bodyParser.text({ type: 'text/html', limit }))
+  .post('/', cors(), async (req: Request, res: Response) => {
+    const { filename, opts } = parseRequest(req.query as Record<string, string>)
+    res.attachment(filename.replace(/(?:\.pdf)?$/, '.pdf')).send((await print(req.body, opts)))
+  })
+  .post('/multiple', cors(), async (req: Request, res: Response) => {
+    const { filename, opts } = parseRequest(req.query as Record<string, string>)
+    const pages = await Promise.all((req.body as string[]).map(html => print(html, { ...opts })))
+    const doc = pages.reduce((merged, content) => (merged.addPagesOf(new ExternalDocument(content)), merged), new Document())
+    res.attachment(filename.replace(/(?:\.pdf)?$/, '.pdf')).send(await doc.asBuffer())
+  })
+  .options('/{*anything}', cors())
+  .use((err: Error, _req: Request, res: Response, next: NextFunction) => {
+    if (res.headersSent) { return next(err) }
+    res.status(500).send(err.stack)
+  })
+  .listen(port, (err?: Error) => {
+    if (err) { return console.error('ERROR: ', err) }
+    console.log(`HTML to PDF converter listening on port: ${port}`)
+  })
 
 function parseRequest(query: Record<string, string>): { filename: string, opts: PDFOptions } {
   // Parse all the parameters to Page#pdf that cannot accept strings
