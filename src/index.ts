@@ -1,11 +1,11 @@
 import type { NextFunction, Request, Response } from 'express'
-import type { Browser, PDFOptions } from 'puppeteer-core/lib/types'
+import type { PDFOptions } from 'puppeteer-core/lib/types'
 import process from 'node:process'
 import bodyParser from 'body-parser'
 import cors from 'cors'
 import express from 'express'
 import { Document, ExternalDocument } from 'pdfjs'
-import { withBrowser } from './shared-browser'
+import { print } from './shared-browser'
 
 const app = express()
 const port = 3000
@@ -14,12 +14,6 @@ const limit = process.env.BODY_LIMIT || '1mb'
 
 app.use(express.json({ limit }))
 app.use(bodyParser.text({ type: 'text/html', limit }))
-
-async function print(browser: Browser, html: string, opts: PDFOptions): Promise<Uint8Array<ArrayBufferLike>> {
-  const page = await browser.newPage()
-  await page.setContent(html, { waitUntil: 'networkidle0' })
-  return page.pdf(opts)
-}
 
 function parseRequest(query: Record<string, string>): { filename: string, opts: PDFOptions } {
   // Parse all the parameters to Page#pdf that cannot accept strings
@@ -37,15 +31,12 @@ function parseRequest(query: Record<string, string>): { filename: string, opts: 
 
 app.post('/', cors(), async (req: Request, res: Response) => {
   const { filename, opts } = parseRequest(req.query as Record<string, string>)
-  await withBrowser(async (browser) => {
-    const page = await print(browser, req.body, opts)
-    res.attachment(filename.replace(/(?:\.pdf)?$/, '.pdf')).send(page)
-  })
+  res.attachment(filename.replace(/(?:\.pdf)?$/, '.pdf')).send((await print(req.body, opts)))
 })
 
 app.post('/multiple', cors(), async (req: Request, res: Response) => {
   const { filename, opts } = parseRequest(req.query as Record<string, string>)
-  const pages = await withBrowser(browser => Promise.all((req.body as string[]).map(html => print(browser, html, { ...opts }))))
+  const pages = await Promise.all((req.body as string[]).map(html => print(html, { ...opts })))
   const doc = pages.reduce((merged, content) => (merged.addPagesOf(new ExternalDocument(content)), merged), new Document())
   res.attachment(filename.replace(/(?:\.pdf)?$/, '.pdf')).send(await doc.asBuffer())
 })

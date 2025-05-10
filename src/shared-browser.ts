@@ -1,4 +1,4 @@
-import type { Browser } from 'puppeteer-core'
+import type { Browser, PDFOptions } from 'puppeteer-core'
 import puppeteer from 'puppeteer-core'
 import { BehaviorSubject, firstValueFrom, from, Observable, of, Subject } from 'rxjs'
 import { delay, distinctUntilChanged, filter, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators'
@@ -27,6 +27,13 @@ const browser$ = (function sharedBrowser(): Observable<Browser> {
   }).pipe(shareReplay({ bufferSize: 1, refCount: true }))
 })()
 
-export function withBrowser<T>(fn: (browser: Browser) => Promise<T>): Promise<T> {
+function withBrowser<T>(fn: (browser: Browser) => Promise<T>): Promise<T> {
   return firstValueFrom(browser$).then(fn)
+}
+
+export async function print(html: string, opts: PDFOptions): Promise<Uint8Array<ArrayBufferLike>> {
+  return withBrowser(browser => browser.newPage()).then(async (page) => {
+    await page.setContent(html, { waitUntil: 'networkidle0' })
+    return page.pdf(opts)
+  })
 }
