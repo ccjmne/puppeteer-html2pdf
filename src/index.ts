@@ -15,20 +15,6 @@ const limit = process.env.BODY_LIMIT || '1mb'
 app.use(express.json({ limit }))
 app.use(bodyParser.text({ type: 'text/html', limit }))
 
-function parseRequest(query: Record<string, string>): { filename: string, opts: PDFOptions } {
-  // Parse all the parameters to Page#pdf that cannot accept strings
-  // See https://pptr.dev/api/puppeteer.pdfoptions
-  const sanitised = Object.fromEntries(Object.entries(query).map(([k, v]) => {
-    if (['displayHeaderFooter', 'landscape', 'omitBackground', 'outline', 'preferCSSPageSize', 'printBackground', 'tagged', 'waitForFonts'].includes(k)) { return [k, v === 'true'] }
-    if (['scale', 'timeout'].includes(k)) { return [k, +v] }
-    return [k, v]
-  }))
-  return {
-    filename: (sanitised.filename || 'document').replace(/(\.pdf)?$/, '.pdf'),
-    opts: { format: 'a4', landscape: false, printBackground: true, ...sanitised, path: null },
-  }
-}
-
 app.post('/', cors(), async (req: Request, res: Response) => {
   const { filename, opts } = parseRequest(req.query as Record<string, string>)
   res.attachment(filename.replace(/(?:\.pdf)?$/, '.pdf')).send((await print(req.body, opts)))
@@ -52,3 +38,17 @@ app.listen(port, (err?: Error) => {
   if (err) { return console.error('ERROR: ', err) }
   console.log(`HTML to PDF converter listening on port: ${port}`)
 })
+
+function parseRequest(query: Record<string, string>): { filename: string, opts: PDFOptions } {
+  // Parse all the parameters to Page#pdf that cannot accept strings
+  // See https://pptr.dev/api/puppeteer.pdfoptions
+  const sanitised = Object.fromEntries(Object.entries(query).map(([k, v]) => {
+    if (['displayHeaderFooter', 'landscape', 'omitBackground', 'outline', 'preferCSSPageSize', 'printBackground', 'tagged', 'waitForFonts'].includes(k)) { return [k, v === 'true'] }
+    if (['scale', 'timeout'].includes(k)) { return [k, +v] }
+    return [k, v]
+  }))
+  return {
+    filename: (sanitised.filename || 'document').replace(/(\.pdf)?$/, '.pdf'),
+    opts: { format: 'a4', landscape: false, printBackground: true, ...sanitised, path: null },
+  }
+}
