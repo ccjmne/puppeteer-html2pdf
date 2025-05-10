@@ -38,6 +38,8 @@ function withBrowser<T>(fn: (browser: Browser) => Promise<T>): Promise<T> {
 export async function print(html: string, opts: PDFOptions): Promise<Uint8Array<ArrayBufferLike>> {
   return withBrowser(browser => browser.newPage()).then(async (page) => {
     await page.setContent(html, { waitUntil: 'networkidle0' })
-    return page.pdf(opts)
+    const pdf = await page.pdf(opts)
+    await page.close()
+    return pdf
   })
 }
