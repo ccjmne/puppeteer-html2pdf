@@ -2,7 +2,7 @@ import type { Browser, PDFOptions } from 'puppeteer-core'
 import process from 'node:process'
 import puppeteer from 'puppeteer-core'
 import { BehaviorSubject, firstValueFrom, from, Observable, of, Subject } from 'rxjs'
-import { delay, distinctUntilChanged, filter, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators'
+import { delay, filter, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators'
 
 const keepalive = +(process.env.BROWSER_KEEPALIVE || '30000')
 
@@ -10,8 +10,7 @@ const keepalive = +(process.env.BROWSER_KEEPALIVE || '30000')
 const browser$ = (function sharedBrowser(): Observable<Browser> {
   const request$ = new Subject<boolean>()
   const instance$ = new BehaviorSubject<Browser | null>(null)
-  request$.asObservable().pipe(
-    distinctUntilChanged(),
+  request$.pipe(
     withLatestFrom(instance$),
     switchMap(([requested, instance]) => {
       if (requested ? !!instance : !instance /* !XOR */) { return of(instance) }
