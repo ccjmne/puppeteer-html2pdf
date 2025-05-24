@@ -30,12 +30,13 @@ const browser$ = (function sharedBrowser(): Observable<Browser> {
   }).pipe(shareReplay({ bufferSize: 1, refCount: true }))
 })()
 
-function withBrowser<T>(fn: (browser: Browser) => Promise<T>): Promise<T> {
-  return firstValueFrom(browser$).then(fn)
+export function withBrowser<T>(fn: (browser: Browser) => Promise<T>): Promise<T> {
+  return firstValueFrom(browser$.pipe(switchMap(fn)))
 }
 
 export async function print(html: string, opts: PDFOptions): Promise<Uint8Array<ArrayBufferLike>> {
-  return withBrowser(browser => browser.newPage()).then(async (page) => {
+  return withBrowser(async (browser) => {
+    const page = await browser.newPage()
     await page.setContent(html, { waitUntil: 'networkidle0' })
     const pdf = await page.pdf(opts)
     await page.close()
