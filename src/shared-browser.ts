@@ -3,10 +3,15 @@ import process from 'node:process'
 import puppeteer from 'puppeteer-core'
 import { BehaviorSubject, firstValueFrom, from, Observable, of, Subject } from 'rxjs'
 import { delay, distinctUntilChanged, filter, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators'
+import which from 'which'
 
 const keepalive = +(process.env.BROWSER_KEEPALIVE || '30000')
+const executablePath = process.env.BROWSER_EXECUTABLE || ['chrome-headless-shell', 'chromium', 'chromium-browser', 'google-chrome-stable', 'google-chrome']
+  .map(name => which.sync(name, { nothrow: true }))
+  .find(ex => !!ex)
+if (!executablePath) throw new Error('No suitable browser executable found.')
 
-// This is a shared browser instance that is created on demand and closed after 30 seconds of inactivity.
+// Shared browser instance created on demand, closed after `keepalive` milliseconds of inactivity
 const browser$ = (function sharedBrowser(): Observable<Browser> {
   const request$ = new Subject<boolean>()
   const instance$ = new BehaviorSubject<Browser | null>(null)
@@ -16,9 +21,13 @@ const browser$ = (function sharedBrowser(): Observable<Browser> {
       if (requested ? !!instance : !instance /* !XOR */) return of(instance)
       return requested
         ? from(puppeteer.launch({
-            executablePath: '/usr/bin/chromium',
-            args:           ['--no-sandbox', '--disable-setuid-sandbox'],
-            headless:       true,
+            executablePath,
+            args: [
+              '--disable-web-security', // Circumvent hypermodern CORS policies even w/ local file://
+              '--no-sandbox',
+              '--disable-setuid-sandbox',
+            ],
+            headless: true,
           }))
         : of(null).pipe(delay(keepalive), tap(() => instance?.close()))
     }),
