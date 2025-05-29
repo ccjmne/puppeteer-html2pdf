@@ -20,4 +20,4 @@ RUN pnpm install
 
 EXPOSE 3000
 ENTRYPOINT ["dumb-init", "--"]
-CMD ["./node_modules/.bin/tsx", "src/index.js"]
+CMD ["./node_modules/.bin/tsx", "src/server.ts"]
