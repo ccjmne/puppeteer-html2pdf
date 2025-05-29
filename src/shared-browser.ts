@@ -13,12 +13,12 @@ const browser$ = (function sharedBrowser(): Observable<Browser> {
   request$.pipe(
     withLatestFrom(instance$),
     switchMap(([requested, instance]) => {
-      if (requested ? !!instance : !instance /* !XOR */) { return of(instance) }
+      if (requested ? !!instance : !instance /* !XOR */) return of(instance)
       return requested
         ? from(puppeteer.launch({
             executablePath: '/usr/bin/chromium',
-            args: ['--no-sandbox', '--disable-setuid-sandbox'],
-            headless: true,
+            args:           ['--no-sandbox', '--disable-setuid-sandbox'],
+            headless:       true,
           }))
         : of(null).pipe(delay(keepalive), tap(() => instance?.close()))
     }),

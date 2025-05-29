@@ -30,20 +30,20 @@ express()
 
   .options('/{*anything}', cors())
   .listen(port, (err?: Error) => {
-    if (err) { return console.error('ERROR: ', err) }
-    console.log(`HTML to PDF converter listening on port: ${port}`)
+    if (err) return console.error('ERROR: ', err)
+    console.log(`HTML-to-PDF converter listening on port: ${port}`)
   })
 
 // Parse all the parameters to Page#pdf that cannot accept strings
 // See https://pptr.dev/api/puppeteer.pdfoptions
 function parseRequest(query: Record<string, string>): { filename: string, opts: PDFOptions } {
   const sanitised = Object.fromEntries(Object.entries(query).map(([k, v]) => {
-    if (['displayHeaderFooter', 'landscape', 'omitBackground', 'outline', 'preferCSSPageSize', 'printBackground', 'tagged', 'waitForFonts'].includes(k)) { return [k, v === 'true'] }
-    if (['scale', 'timeout'].includes(k)) { return [k, +v] }
+    if (['displayHeaderFooter', 'landscape', 'omitBackground', 'outline', 'preferCSSPageSize', 'printBackground', 'tagged', 'waitForFonts'].includes(k)) return [k, v === 'true']
+    if (['scale', 'timeout'].includes(k)) return [k, +v]
     return [k, v]
   }))
   return {
     filename: (sanitised.filename || 'document').replace(/(\.pdf)?$/, '.pdf'),
-    opts: { format: 'a4', landscape: false, printBackground: true, ...sanitised, path: null },
+    opts:     { format: 'a4', landscape: false, printBackground: true, ...sanitised, path: null },
   }
 }
