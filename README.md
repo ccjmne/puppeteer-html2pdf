@@ -1,6 +1,6 @@
 # ccjmne/puppeteer-html2pdf
 
-Print your HTML to PDF via Puppeteer in a Docker container.
+Print your HTML to PDF through a Web server.
 
 [![Docker Image CI](https://github.com/ccjmne/puppeteer-html2pdf/actions/workflows/publish-to-ghcr.yml/badge.svg)](https://github.com/ccjmne/puppeteer-html2pdf/actions/workflows/publish-to-ghcr.yml)
 
@@ -68,29 +68,6 @@ Both methods handle the following query parameters:
   - `headerTemplate`
   - `margin`
 
-## Changes from version 1.x.x
-
-The `/multiple` endpoint used to expect the request body to be a JSON object with a single `pages` property that would map to a JSON array of strings containing your HTML content for each page to be printed.  
-That endpoint now expects the JSON array directly.
-
-- version 1.x.x
-  ```json
-  {
-    "pages": [
-      "<h1>First Page</h1>",
-      "<h1>Second Page</h1>"
-    ]
-  }
-  ```
-
-- version 2.x.x
-  ```json
-  [
-    "<h1>First Page</h1>",
-    "<h1>Second Page</h1>"
-  ]
-  ```
-
 ## Examples
 
 Single-page document, default settings (format: `A4`, orientation: `portrait`):
@@ -123,16 +100,11 @@ curl -X POST \
   ]'
 ```
 
-## TODO
-
-1. Better handle errors.
-2. Set up a way to configure endpoints that will inject custom CSS styles in each page.
-
-## Build
+## Maintainer notes
 
 **Automatically builds and publishes to GitHub Packages** (GitHub Container Registry) with each **GitHub Release**.
 
-~~Includes a comprehensive script that lets you build and publish new versions of the image: `./compose.sh <version>`~~
+Includes a comprehensive script that lets you build and publish new versions of the image: `./compose.sh <version>`
 
 ## License
 
