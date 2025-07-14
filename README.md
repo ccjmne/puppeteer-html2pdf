@@ -19,12 +19,12 @@ It offers images for both ARM and AMD architectures.
 
 ## Quick Start
 
-As a webserver, on the port of your choosing.
+This example (which you can copy and directly paste into your shell interpreter) will run it on port `3000` and print a simple HTML document to PDF.
 
 ```shell
-docker run -it --rm -p=3000:3000 ghcr.io/ccjmne/puppeteer-html2pdf:latest
-# Or as a long-lived container:
-# docker run --name html2pdf --detach --port=3000:3000 --memory 500M ghcr.io/ccjmne/puppeteer-html2pdf:latest
+docker run --name html2pdf --detach --port=3000:3000 --memory 500M ghcr.io/ccjmne/puppeteer-html2pdf:latest
+# Or for a quick test, to be killed with Ctrl-C:
+# docker run -it --rm -p=3000:3000 ghcr.io/ccjmne/puppeteer-html2pdf:latest
 
 curl localhost:3000 -H 'Content-Type: text/html' --data '
 <h1>Hello World!</h1>
