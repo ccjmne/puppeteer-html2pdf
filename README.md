@@ -43,7 +43,7 @@ curl localhost:3000 -H 'Content-Type: text/html' --data '
 | BODY_LIMIT        | Maximum request body size. Passed on to [body-parser](https://github.com/expressjs/body-parser#limit) and `express.json`. | `1mb`         |
 | BROWSER_KEEPALIVE | Period (in ms) of inactivity after which the shared browser instance is shut down.                                        | `30000` (30s) |
 
-## Using Fonts
+## Custom Fonts
 
 The simplest way to add fonts is to mount a volume with the fonts you want to use to the `/usr/share/fonts` directory in the container.
 
@@ -65,7 +65,7 @@ curl localhost:3000 -H 'Content-Type: text/html' --data '
 </html>' > out.pdf && xdg-open out.pdf
 ```
 
-## Usage
+## Endpoints
 
 The Web server listens on a port of your choosing (see the [Quick Start](#quick-start) section) and exposes two endpoints:
 
@@ -116,7 +116,7 @@ curl 'http://localhost:3000/multiple' \
   ]'
 ```
 
-## Maintainer notes
+## Maintainer Notes
 
 **Automatically builds and publishes to GitHub Packages** (GitHub Container Registry) with each **GitHub Release**.
 
