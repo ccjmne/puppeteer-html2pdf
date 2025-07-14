@@ -122,6 +122,13 @@ curl 'http://localhost:3000/multiple' \
 
 Includes a comprehensive script that lets you build and publish new versions of the image: `./compose.sh <version>`
 
+### TODO
+
+- [ ] Support printing screenshots as images
+  - [ ] Rename to html-printer?
+- [ ] Provide as plain TypeScript library rather than a Web server
+  - [ ] Publish library to [npm](https://www.npmjs.com/)
+
 ## License
 
 MIT. Do as you please.  
