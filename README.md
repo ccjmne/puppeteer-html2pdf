@@ -65,9 +65,9 @@ curl localhost:3000 -H 'Content-Type: text/html' --data '
 </html>' > out.pdf && xdg-open out.pdf
 ```
 
-## Use it
+## Usage
 
-The webserver listens on the port (specified in the [Quick Start](#quick-start) section) and exposes two endpoints:
+The Web server listens on a port of your choosing (see the [Quick Start](#quick-start) section) and exposes two endpoints:
 
 Single-page document, default settings (format: `A4`, orientation: `portrait`):
 
@@ -87,13 +87,12 @@ Both methods handle the following query parameters:
   - `headerTemplate`
   - `margin`
 
-## Examples
+### Examples
 
 Single-page document, default settings (format: `A4`, orientation: `portrait`):
 
 ```bash
-curl -X POST \
-  'http://localhost:3000' \
+curl 'http://localhost:3000' \
   -H 'Content-Type: text/html' \
   -d '<html><body><h1>Hello World!</h1></body></html>'
 ```
@@ -101,8 +100,7 @@ curl -X POST \
 Single-page document (format: `A3`, orientation: `landscape`):
 
 ```bash
-curl -X POST \
-  'http://localhost:3000?format=a3&landscape=true' \
+curl 'http://localhost:3000?format=a3&landscape=true' \
   -H 'Content-Type: text/html' \
   -d '<html><body><h1>Hello World!</h1></body></html>'
 ```
@@ -110,8 +108,7 @@ curl -X POST \
 Multi-page document:
 
 ```bash
-curl -X POST \
-  'http://localhost:3000/multiple' \
+curl 'http://localhost:3000/multiple' \
   -H 'Content-Type: application/json' \
   -d '[
     "<html><body><h1>Hello World!</h1></body></html>",
