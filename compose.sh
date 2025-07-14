@@ -1,9 +1,9 @@
 #! /usr/bin/env bash
 set -e
 
-ok() { printf "   [\e[0;32m ok \e[0m] $1\n"; }
-ko() { printf "[\e[0;31m error \e[0m] $1\n"; }
-nf() { printf " [\e[1;34m info \e[0m] $1\n"; }
+ok() { printf "   [[1;32m ok [0m] %s\n" "$*"; }
+ko() { printf "[[1;31m error [0m] %s\n" "$*"; }
+nf() { printf " [[1;34m info [0m] %s\n" "$*"; }
 
 usage() { ko "Usage: $0 <version number>" 1>&2; exit 1; }
 if [[ ! $1 =~ [0-9]+\.[0-9]+\.[0-9]+ ]]; then
@@ -33,10 +33,15 @@ docker buildx build --push --platform arm64,amd64 \
   --tag ${registry}/${img}:latest .
 ok "Build complete"
 
-nf "\e[2mTesting:\e[0m"
-nf "   docker run -it --rm -p=\e[1;34m<port>\e[0m:3000 ${registry}/${img}:\e[1;34m${version}\e[0m"
-nf "\e[0m - \e[2mkill w/: \e[0mCtrl^C"
-nf "\e[2mProduction:\e[0m"
-nf "   docker run --detach --memory 1G --sysctl net.ipv6.conf.all.disable_ipv6=1 \\
-                        --name html2pdf -p=\e[1;34m<port>\e[0m:3000 ${registry}/${img}:\e[1;34m${version}\e[0m"
-nf "\e[0m - \e[2mstop w/: \e[0mdocker stop html2pdf"
+nf "[2mTesting:[0m"
+nf "   docker run -it --rm -p=[1;34m<port>[0m:3000 ${registry}/${img}:[1;34m${version}[0m"
+nf "[0m - [2mkill: [0mCtrl^C"
+nf "[2mProduction:[0m"
+nf "   docker run --detach --name html2pdf --memory 500M \\"
+nf "              --port=[1;34m<port>[0m:3000      ${registry}/${img}:[1;34m${version}[0m"
+nf "[0m - [2mstop: [0mdocker stop html2pdf"
+nf "[2mWith custom fonts:[0m"
+nf "   docker run --detach --name html2pdf --memory 500M \\"
+nf "              --mount type=bind,source=[1;34m</path/to/local/fonts>[0m,target=/usr/share/fonts \\"
+nf "              --port=[1;34m<port>[0m:3000      ${registry}/${img}:[1;34m${version}[0m"
+nf "[0m - [2mstop: [0mdocker stop html2pdf"
