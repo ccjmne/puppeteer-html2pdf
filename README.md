@@ -43,6 +43,28 @@ curl localhost:3000 -H 'Content-Type: text/html' --data '
 | BODY_LIMIT        | Maximum request body size. Passed on to [body-parser](https://github.com/expressjs/body-parser#limit) and `express.json`. | `1mb`         |
 | BROWSER_KEEPALIVE | Period (in ms) of inactivity after which the shared browser instance is shut down.                                        | `30000` (30s) |
 
+## Using Fonts
+
+The simplest way to add fonts is to mount a volume with the fonts you want to use to the `/usr/share/fonts` directory in the container.
+
+```shell
+# Obtain a font
+longcang=$(curl -L 'https://fonts.googleapis.com/css2?family=Long+Cang' | grep -Po '(?<=url\()[^)]+')
+curl -L "$longcang" -o LongCang-Regular.ttf
+
+# Add it to the container
+docker run -it --rm -p3000:3000 -v./LongCang-Regular.ttf:/usr/local/share/fonts/LongCang-Regular.ttf ghcr.io/ccjmne/puppeteer-html2pdf:latest
+
+# Use it in your HTML
+curl localhost:3000 -H 'Content-Type: text/html' --data '
+<html>
+  <body style="fond-family: '\''Long Cang'\'', sans-serif">
+    <h1>I play well with custom fonts, too!</h1>
+    <p>鉴于对人类家庭所有成员的固有尊严及其平等的和不移的权利的承认,乃是世界自由、正义与和平的基础</p>
+  </body>
+</html>' > out.pdf && xdg-open out.pdf
+```
+
 ## Use it
 
 The webserver listens on the port (specified in the [Quick Start](#quick-start) section) and exposes two endpoints:
