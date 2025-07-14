@@ -21,23 +21,14 @@ It offers images for both ARM and AMD architectures.
 
 As a webserver, on the port of your choosing.
 
-- Testing:
-
 ```shell
-docker run -it --rm -p=<port>:3000 ghcr.io/ccjmne/puppeteer-html2pdf:<version>
+# Quick test, on port 3000:
+docker run -it --rm -p=3000:3000 ghcr.io/ccjmne/puppeteer-html2pdf:latest
+
+# Long-lived container:
+docker run --name html2pdf --detach --port=3000:3000 --memory 500M \
+           ghcr.io/ccjmne/puppeteer-html2pdf:latest
 ```
-
-Kill with: `Ctrl^C`
-
-- Production:
-
-```shell
-docker run --name html2pdf --detach -p=<port>:3000 \
-           --shm-size 1G --sysctl net.ipv6.conf.all.disable_ipv6=1 \
-           ghcr.io/ccjmne/puppeteer-html2pdf:<version>
-```
-
-Stop with: `docker stop html2pdf`
 
 ## Docker Environment Variables
 
