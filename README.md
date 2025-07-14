@@ -17,17 +17,23 @@ Technologies used:
 
 It offers images for both ARM and AMD architectures.
 
-## Run it
+## Quick Start
 
 As a webserver, on the port of your choosing.
 
 ```shell
-# Quick test, on port 3000:
 docker run -it --rm -p=3000:3000 ghcr.io/ccjmne/puppeteer-html2pdf:latest
+# Or as a long-lived container:
+# docker run --name html2pdf --detach --port=3000:3000 --memory 500M ghcr.io/ccjmne/puppeteer-html2pdf:latest
 
-# Long-lived container:
-docker run --name html2pdf --detach --port=3000:3000 --memory 500M \
-           ghcr.io/ccjmne/puppeteer-html2pdf:latest
+curl localhost:3000 -H 'Content-Type: text/html' --data '
+<h1>Hello World!</h1>
+<blockquote>
+  I love deadlines. I like the whooshing sound they make as they fly by.
+  <br>
+  <small style="float:right">— Douglas Adams</small>
+</blockquote>
+' > out.pdf && xdg-open out.pdf
 ```
 
 ## Docker Environment Variables
@@ -39,7 +45,7 @@ docker run --name html2pdf --detach --port=3000:3000 --memory 500M \
 
 ## Use it
 
-The webserver listens on the port (specified in the [Run it](#run-it) section) and exposes two endpoints:
+The webserver listens on the port (specified in the [Quick Start](#quick-start) section) and exposes two endpoints:
 
 Single-page document, default settings (format: `A4`, orientation: `portrait`):
 
