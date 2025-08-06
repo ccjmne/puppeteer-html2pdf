@@ -32,18 +32,18 @@
     "body-parser": "^2.2.0",
     "cors": "^2.8.5",
     "express": "^5.1.0",
-    "pdfjs": "^2.5.3",
-    "puppeteer-core": "^24.9.0",
+    "pdfjs": "^2.5.4",
+    "puppeteer-core": "^24.15.0",
     "rxjs": "^7.8.2",
-    "tsx": "^4.19.4",
+    "tsx": "^4.20.3",
     "which": "^5.0.0"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^4.13.2",
-    "@types/body-parser": "^1.19.5",
-    "@types/cors": "^2.8.18",
-    "@types/express": "^5.0.2",
+    "@antfu/eslint-config": "^5.1.0",
+    "@types/body-parser": "^1.19.6",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
     "@types/which": "^3.0.4",
-    "eslint": "^9.27.0"
+    "eslint": "^9.32.0"
   }
 }
