@@ -6,7 +6,7 @@ Print your HTML to PDF through a Web server.
 
 ## Inside the box
 
-This is a simple [Express](https://expressjs.com/) server listening for `POST` requests passing some custom HTML to print as PDF for generating fancy reports.
+This is a simple [Express](https://expressjs.com/) server listening for `POST` requests passing some arbitrary HTML to print as PDF for generating fancy reports.
 
 Technologies used:
 
@@ -54,12 +54,14 @@ longcang=$(curl -L 'https://fonts.googleapis.com/css2?family=Long+Cang' | grep -
 curl -L "$longcang" -o LongCang-Regular.ttf
 
 # Add it to the container
-docker run -it --rm -p3000:3000 -v./LongCang-Regular.ttf:/usr/local/share/fonts/LongCang-Regular.ttf ghcr.io/ccjmne/puppeteer-html2pdf:latest
+docker run -it --rm -p3000:3000                                          \
+    -v./LongCang-Regular.ttf:/usr/local/share/fonts/LongCang-Regular.ttf \
+    ghcr.io/ccjmne/puppeteer-html2pdf:latest
 
 # Use it in your HTML
 curl localhost:3000 -H 'Content-Type: text/html' --data '
 <html>
-  <body style="fond-family: '\''Long Cang'\'', sans-serif">
+  <body style="font-family: '\''Long Cang'\'', cursive;">
     <h1>I play well with custom fonts, too!</h1>
     <p>鉴于对人类家庭所有成员的固有尊严及其平等的和不移的权利的承认,乃是世界自由、正义与和平的基础</p>
   </body>
