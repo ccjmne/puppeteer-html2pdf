@@ -5,7 +5,7 @@ LABEL org.opencontainers.image.source=https://github.com/ccjmne/puppeteer-html2p
 USER root
 RUN apt-get update
 # https://github.com/Yelp/dumb-init
-RUN apt-get install -y chromium dumb-init
+RUN apt-get install -y chromium dumb-init fontconfig
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
@@ -20,4 +20,4 @@ RUN pnpm install
 
 EXPOSE 3000
 ENTRYPOINT ["dumb-init", "--"]
-CMD ["./node_modules/.bin/tsx", "src/server.ts"]
+CMD ["sh", "-c", "fc-cache -f && exec ./node_modules/.bin/tsx src/server.ts"]
