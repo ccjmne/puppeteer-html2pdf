@@ -62,7 +62,7 @@ docker run -it --rm -p3000:3000                                          \
 curl localhost:3000 -H 'Content-Type: text/html' --data '
 <html>
   <body style="font-family: '\''Long Cang'\'', cursive;">
-    <h1>I play well with custom fonts, too!</h1>
+    <h1>I play nice with custom fonts, too!</h1>
     <p>鉴于对人类家庭所有成员的固有尊严及其平等的和不移的权利的承认,乃是世界自由、正义与和平的基础</p>
   </body>
 </html>' > out.pdf && xdg-open out.pdf
