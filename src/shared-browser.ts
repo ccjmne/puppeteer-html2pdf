@@ -18,7 +18,7 @@ const browser$ = (function sharedBrowser(): Observable<Browser> {
   request$.pipe(
     withLatestFrom(instance$),
     switchMap(([requested, instance]) => {
-      if (requested ? !!instance : !instance /* !XOR */) return of(instance)
+      if (requested === !!instance) return of(instance)
       return requested
         ? from(puppeteer.launch({
             executablePath,
