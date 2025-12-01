@@ -31,7 +31,7 @@
   "dependencies": {
     "body-parser": "^2.2.1",
     "cors": "^2.8.5",
-    "express": "^5.1.0",
+    "express": "^5.2.0",
     "pdfjs": "^2.5.4",
     "puppeteer-core": "^24.15.0",
     "rxjs": "^7.8.2",
