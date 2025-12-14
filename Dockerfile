@@ -9,7 +9,8 @@ RUN apt-get install -y chromium dumb-init fontconfig
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable
+ENV CI="true"
+RUN npm install --global pnpm
 
 RUN mkdir -p /app
 COPY pnpm-lock.yaml /app
