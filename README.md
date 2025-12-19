@@ -23,7 +23,9 @@ This example (which you can copy and directly paste into your shell interpreter)
 
 ```shell
 docker run --name html2pdf --detach --publish=3000:3000 --memory 500M ghcr.io/ccjmne/puppeteer-html2pdf:latest
-sleep 1
+# It may take a second to precompute fonts cache on the first start-up
+until curl -q localhost:3000 >/dev/null 2>&1; do sleep 0.1; done
+
 # Or for a quick test, to be killed with Ctrl-C:
 # docker run -it --rm -p=3000:3000 ghcr.io/ccjmne/puppeteer-html2pdf:latest
 
