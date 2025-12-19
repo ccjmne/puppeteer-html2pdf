@@ -31,19 +31,19 @@
   "dependencies": {
     "body-parser": "^2.2.1",
     "cors": "^2.8.5",
-    "express": "^5.2.0",
+    "express": "^5.2.1",
     "pdfjs": "^2.5.4",
-    "puppeteer-core": "^24.15.0",
+    "puppeteer-core": "^24.34.0",
     "rxjs": "^7.8.2",
-    "tsx": "^4.20.3",
+    "tsx": "^4.21.0",
     "which": "^5.0.0"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^5.1.0",
+    "@antfu/eslint-config": "^5.4.1",
     "@types/body-parser": "^1.19.6",
     "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.3",
+    "@types/express": "^5.0.6",
     "@types/which": "^3.0.4",
-    "eslint": "^9.32.0"
+    "eslint": "^9.39.2"
   }
 }
