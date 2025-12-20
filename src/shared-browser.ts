@@ -1,4 +1,4 @@
-import type { Browser, PDFOptions } from 'puppeteer-core'
+import type { Browser } from 'puppeteer-core'
 import process from 'node:process'
 import puppeteer from 'puppeteer-core'
 import { BehaviorSubject, firstValueFrom, from, Observable, of, Subject } from 'rxjs'
@@ -42,14 +42,4 @@ const browser$ = (function sharedBrowser(): Observable<Browser> {
 
 export function withBrowser<T>(fn: (browser: Browser) => Promise<T>): Promise<T> {
   return firstValueFrom(browser$.pipe(switchMap(fn)))
-}
-
-export async function print(html: string, opts: PDFOptions): Promise<Uint8Array<ArrayBufferLike>> {
-  return withBrowser(async (browser) => {
-    const page = await browser.newPage()
-    await page.setContent(html, { waitUntil: 'networkidle0' })
-    const pdf = await page.pdf(opts)
-    await page.close()
-    return pdf
-  })
 }
