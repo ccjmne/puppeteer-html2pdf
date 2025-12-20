@@ -32,7 +32,7 @@
     "body-parser": "^2.2.1",
     "cors": "^2.8.5",
     "express": "^5.2.1",
-    "pdfjs": "^2.5.4",
+    "pdf-lib": "^1.17.1",
     "puppeteer-core": "^24.34.0",
     "rxjs": "^7.8.2",
     "tsx": "^4.21.0",
