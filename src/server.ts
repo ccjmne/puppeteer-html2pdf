@@ -25,7 +25,7 @@ express()
 
   // Accepts multiple HTML documents in the body as a Json array of strings
   .post('/multiple', cors(), async (req: Request, res: Response) => {
-    const { filename, opts, extraOpts } = parseRequest(req.query as Record<string, string>)
+    const { filename, opts, extraOpts } = parseRequest(req.query as Record<string, string>, true)
     const pages = await Promise.all((req.body as string[]).map(html => print(html, { ...opts }, { ...extraOpts })))
     const doc = pages.reduce((merged, content) => (merged.addPagesOf(new ExternalDocument(content)), merged), new Document())
     if (!doc.info.title && extraOpts.title)
@@ -41,7 +41,7 @@ express()
 
 // Parse all the parameters to Page#pdf that cannot accept strings
 // See https://pptr.dev/api/puppeteer.pdfoptions
-function parseRequest(query: Record<string, string>): { filename: string, opts: PDFOptions, extraOpts: ExtraOptions } {
+function parseRequest(query: Record<string, string>, multipleDocuments?: boolean): { filename: string, opts: PDFOptions, extraOpts: ExtraOptions } {
   const { singlePage, title, filename, ...pdfopts } = query
 
   const sanitised = Object.fromEntries(Object.entries(pdfopts).map(([k, v]) => {
@@ -53,6 +53,6 @@ function parseRequest(query: Record<string, string>): { filename: string, opts: 
   return {
     filename:  (filename || 'document').replace(/(\.pdf)?$/, '.pdf'),
     opts:      { format: 'a4', landscape: false, printBackground: true, ...sanitised, path: null },
-    extraOpts: { singlePage: singlePage === 'true', title: title || parse(filename ?? '').name || undefined },
+    extraOpts: { singlePage: !multipleDocuments && singlePage === 'true', title: title || parse(filename ?? '').name || undefined },
   }
 }
