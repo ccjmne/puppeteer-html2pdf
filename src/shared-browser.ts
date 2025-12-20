@@ -5,6 +5,11 @@ import { BehaviorSubject, firstValueFrom, from, Observable, of, Subject } from '
 import { delay, distinctUntilChanged, filter, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators'
 import which from 'which'
 
+export interface ExtraOptions {
+  singlePage?: boolean
+  title?:      string
+}
+
 const keepalive = +(process.env.BROWSER_KEEPALIVE || '30000')
 const executablePath = process.env.BROWSER_EXECUTABLE || ['chrome-headless-shell', 'chromium', 'chromium-browser', 'google-chrome-stable', 'google-chrome']
   .map(name => which.sync(name, { nothrow: true }))
@@ -44,10 +49,37 @@ export function withBrowser<T>(fn: (browser: Browser) => Promise<T>): Promise<T>
   return firstValueFrom(browser$.pipe(switchMap(fn)))
 }
 
-export async function print(html: string, opts: PDFOptions): Promise<Uint8Array<ArrayBufferLike>> {
+function docDimensions() {
+  const body = document.body
+  const html = document.documentElement
+  return {
+    height: Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight),
+    width:  Math.max(body.scrollWidth, body.offsetWidth, html.clientWidth, html.scrollWidth, html.offsetWidth),
+  }
+}
+
+export async function print(htmlOrUrl: string, opts: PDFOptions, extraOpts: ExtraOptions): Promise<Uint8Array<ArrayBufferLike>> {
   return withBrowser(async (browser) => {
     const page = await browser.newPage()
-    await page.setContent(html, { waitUntil: 'networkidle0' })
+    if (/^https?:\/\//i.test(htmlOrUrl)) {
+      await page.goto(htmlOrUrl, { waitUntil: 'networkidle0' })
+    }
+    else {
+      await page.setContent(htmlOrUrl, { waitUntil: 'networkidle0' })
+    }
+
+    if (extraOpts.singlePage) {
+      delete opts.format
+      delete opts.landscape
+      const { width, height } = await page.evaluate(docDimensions)
+      opts.width = `${width}px`
+      opts.height = `${height}px`
+    }
+
+    if (extraOpts.title && !(await page.title())) {
+      await page.evaluate((t: string) => document.title = t, extraOpts.title)
+    }
+
     const pdf = await page.pdf(opts)
     await page.close()
     return pdf

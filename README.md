@@ -87,6 +87,8 @@ Single-page document, default settings (format: `A4`, orientation: `portrait`):
 Both methods handle the following query parameters:
 
 - `filename`: the name of the resulting PDF file (will automatically append the `.pdf` extension if absent)
+- `title`: the title of the resulting PDF if the provided html does not contain a <title> tag, falls back to filename without extension if provided
+- `singlePage`: create PDF with a single page containing all the content (not supported with `/multiple`)
 - all the options supported by [Puppeteer's page#pdf(\[options\])](https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagepdfoptions), except:
   - `path`
   - `headerTemplate`
@@ -136,5 +138,6 @@ Includes a comprehensive script that lets you build and publish new versions of 
 
 ## License
 
-MIT. Do as you please.  
+MIT. Do as you please.
+
 Refer to the [LICENSE](./LICENSE) file for more details.
