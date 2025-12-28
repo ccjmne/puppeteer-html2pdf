@@ -34,6 +34,11 @@ express()
     res.attachment(filename).send(await printHTML({ cfg, data: req.body as string[] }))
   })
 
+  // Error-handling middleware must come last and take *four* arguments
+  .use((err: Error & Partial<{ status: number }>, _req: Request, res: Response, _next: any) => {
+    res.status(err.status ?? 500).send(err.message)
+  })
+
   .listen(port, (err?: Error) => {
     if (err) return console.error('ERROR: ', err)
     console.log(`HTML-to-PDF converter listening on port: ${port}`)

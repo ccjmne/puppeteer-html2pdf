@@ -1,7 +1,7 @@
 import type { PDFOptions } from 'puppeteer-core'
 import { Buffer } from 'node:buffer'
 import { PDFDocument } from 'pdf-lib'
-import { Page } from 'puppeteer-core'
+import { Page, ProtocolError } from 'puppeteer-core'
 import { withBrowser } from './shared-browser'
 
 export interface PDFInfo { title?: string, author?: string, subject?: string, keywords?: string[], creator?: string, producer?: string, creationDate?: Date, modificationDate?: Date }
@@ -16,10 +16,14 @@ export function printHTML(cfg: PrinterConfig) {
 }
 
 export function printURLs(cfg: PrinterConfig) {
-  return print(cfg, Page.prototype.goto)
+  return print(cfg, Page.prototype.goto).catch((e) => {
+    if (e instanceof ProtocolError) throw err(e.message)
+    else throw e
+  })
 }
 
 function print({ data, cfg }: PrinterConfig, load: typeof Page.prototype.setContent | typeof Page.prototype.goto) {
+  if (!data.length) throw err('No document source provided')
   return withBrowser(async browser => await combine(await Promise.all(data.map(async function (datum) {
     const page = await browser.newPage()
     await page.setViewport(viewport(cfg))
@@ -39,7 +43,6 @@ function print({ data, cfg }: PrinterConfig, load: typeof Page.prototype.setCont
 }
 
 async function combine(pdfs: Uint8Array[], info: PDFInfo): Promise<Buffer> {
-  if (!pdfs.length) return Buffer.from(await (await PDFDocument.create()).save())
   const [out, ...docs] = await Promise.all(pdfs.map(buf => PDFDocument.load(buf)))
   await allSequential(docs, async doc => (await out.copyPages(doc, doc.getPageIndices())).forEach(p => out.addPage(p)))
   Object.entries(info).forEach(([k, v]) => out['set' + k[0].toUpperCase() + k.slice(1)]?.(v))
@@ -67,4 +70,8 @@ function allSequential<I, R>(input: I[], fn: (i: I) => Promise<R>): Promise<R[]>
     (prev, next) => prev.then(res => fn(next).then(r => [...res, r])),
     Promise.resolve([] as R[]),
   )
+}
+
+function err(message: string, status = 400) {
+  return Object.assign(new Error(message), { status })
 }
