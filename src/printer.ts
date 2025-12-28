@@ -22,6 +22,7 @@ export function printURLs(cfg: PrinterConfig) {
 function print({ data, cfg }: PrinterConfig, load: typeof Page.prototype.setContent | typeof Page.prototype.goto) {
   return withBrowser(async browser => await combine(await Promise.all(data.map(async function (datum) {
     const page = await browser.newPage()
+    await page.setViewport(viewport(cfg))
     await load.call(page, datum, { waitUntil: 'networkidle0' })
     const content = await page.pdf({
       format:          'a4',
@@ -52,6 +53,13 @@ function docDimensions() {
     height: Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight) + 'px',
     width:  Math.max(body.scrollWidth,  body.offsetWidth,  html.clientWidth,  html.scrollWidth,  html.offsetWidth)  + 'px',
   }
+}
+
+// Ideal viewport to render a0..9 documents at 96dpi
+function viewport({ format, landscape }: PDFOptions) {
+  if (!format || !landscape || !format.match(/^a\d$/i)) return null
+  const [w, h] = [4494, 3179, 2245, 1587, 1123, 794, 559, 397, 280, 197, 140].slice(+format[2])
+  return Object.assign(landscape ? { width: w, height: h } : { width: h, height: w }, { deviceScaleFactor: 1 })
 }
 
 function allSequential<I, R>(input: I[], fn: (i: I) => Promise<R>): Promise<R[]> {
