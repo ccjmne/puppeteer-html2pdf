@@ -12,11 +12,10 @@ ENV PATH="$PNPM_HOME:$PATH"
 ENV CI="true"
 RUN npm install --global pnpm
 
-RUN mkdir -p /app
-COPY pnpm-lock.yaml /app
 WORKDIR /app
+ADD pnpm-lock.yaml .
 RUN pnpm fetch --prod
-COPY . /app
+ADD . .
 RUN pnpm install
 
 EXPOSE 3000
