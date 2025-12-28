@@ -1,8 +1,8 @@
 {
   "name": "puppeteer-html2pdf",
   "type": "module",
-  "version": "2.4.0",
-  "description": "Print your HTML to PDF via Puppeteer in a Docker container. It's all in the repo name 👌",
+  "version": "2.5.0",
+  "description": "Print your HTML to PDF via Puppeteer in a Docker container",
   "author": "Éric NICOLAS <ccjmne@gmail.com> (ccjmne)",
   "license": "MIT",
   "homepage": "https://github.com/ccjmne/puppeteer-html2pdf",
@@ -36,10 +36,10 @@
     "puppeteer-core": "^24.34.0",
     "rxjs": "^7.8.2",
     "tsx": "^4.21.0",
-    "which": "^5.0.0"
+    "which": "^6.0.0"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^5.4.1",
+    "@antfu/eslint-config": "^6.7.3",
     "@types/body-parser": "^1.19.6",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
