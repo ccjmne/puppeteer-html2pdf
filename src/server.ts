@@ -40,7 +40,7 @@ express()
 
 // Parse:
 // - the parameters to Page#pdf that cannot accept strings        (see https://pptr.dev/api/puppeteer.pdfoptions)
-// - the non-string fields of standard PDF Information Dictionary (creationDate and modDate)
+// - the non-string fields of standard PDF Information Dictionary (keywords, creationDate and modDate)
 // - this service's own properties                                (filename and onepage)
 function parseRequest(query: Record<string, string>): { filename: `${string}.pdf`, cfg: PrinterConfig['cfg'] } {
   return {
@@ -48,6 +48,7 @@ function parseRequest(query: Record<string, string>): { filename: `${string}.pdf
     cfg:      Object.fromEntries(Object.entries(query).map(([k, v]) => {
       if (/* pptr#pdf: */ ['displayHeaderFooter', 'landscape', 'omitBackground', 'outline', 'preferCSSPageSize', 'printBackground', 'tagged', 'waitForFonts'].includes(k)) return [k, v === 'true']
       if (/* pptr#pdf: */ ['scale', 'timeout'].includes(k)) return [k, +v]
+      if (/* infodict: */ ['keywords'].includes(k)) return [k, Array.isArray(v) ? v : [v]]
       if (/* infodict: */ ['creationDate', 'modDate'].includes(k)) return [k, new Date(v)]
       if (/* html2pdf: */ ['onepage'].includes(k)) return [k, v === 'true']
       return [k, v]

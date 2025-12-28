@@ -4,7 +4,7 @@ import { PDFDocument } from 'pdf-lib'
 import { Page } from 'puppeteer-core'
 import { withBrowser } from './shared-browser'
 
-export interface PDFInfo { title?: string, author?: string, subject?: string, keywords?: string, creator?: string, producer?: string, creationDate?: Date, modificationDate?: Date }
+export interface PDFInfo { title?: string, author?: string, subject?: string, keywords?: string[], creator?: string, producer?: string, creationDate?: Date, modificationDate?: Date }
 export interface ExtraOpts { onepage?: boolean  }
 export interface PrinterConfig {
   data: string[]
