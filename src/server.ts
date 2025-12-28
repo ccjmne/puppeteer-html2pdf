@@ -24,7 +24,7 @@ express()
   // Accepts a list of URLs in the body
   .post('/url', async (req: Request, res: Response) => {
     const { filename, cfg } = parseRequest(req.query as Record<string, string>)
-    res.attachment(filename).send(await printURLs({ cfg, data: (req.body as string).split(/\n/).filter(({ length }) => length) }))
+    res.attachment(filename).send(await printURLs({ cfg, data: (req.body as string).split(/\s*\n\s*/).filter(({ length }) => length) }))
   })
 
   // Accepts multiple HTML documents in the body as a JSON array of strings
