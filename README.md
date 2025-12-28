@@ -46,6 +46,31 @@ curl localhost:3000 -H 'Content-Type: text/html' --data '
 | BODY_LIMIT        | Maximum request body size. Passed on to [body-parser](https://github.com/expressjs/body-parser#limit) and `express.json`. | `1mb`         |
 | BROWSER_KEEPALIVE | Period (in ms) of inactivity after which the shared browser instance is shut down.                                        | `30000` (30s) |
 
+## Setting PDF Information Dictionary
+
+The [properties of the PDF Information Dictionary](https://www.verypdf.com/document/pdf-format-reference/pg_0844.htm) can also be controlled via query parameters. These are:
+
+| Parameter      | Description                                                                                                                                                 |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `title`        | The document's title                                                                                                                                        |
+| `author`       | The name of the person who created the document                                                                                                             |
+| `subject`      | The subject of the document                                                                                                                                 |
+| `keywords`     | Keywords associated with the document                                                                                                                       |
+| `creator`      | If the document was converted to PDF from another format, the name of the conforming product that created the original document from which it was converted |
+| `producer`     | If the document was converted to PDF from another format, the name of the conforming product that converted it to PDF                                       |
+| `creationDate` | The date and time the document was created                                                                                                                  |
+| `modDate`      | The date and time the document was most recently modified                                                                                                   |
+
+Default values are provided for five of these:
+
+| Parameter      | Default value                                                                          |
+| -------------- | -------------------------------------------------------------------------------------- |
+| `title`        | The first (or only) HTML document or Web page's title                                  |
+| `creator`      | The full name and version of Chromium driven that generated the PDFs through Puppeteer |
+| `producer`     | The name and version of this application                                               |
+| `creationDate` | The current date and time                                                              |
+| `modDate`      | The current date and time                                                              |
+
 ## Custom Fonts
 
 The simplest way to add fonts is to mount a volume with the fonts you want to use to the `/usr/share/fonts` directory in the container.
@@ -76,20 +101,28 @@ The Web server listens on a port of your choosing (see the [Quick Start](#quick-
 
 Single-page document, default settings (format: `A4`, orientation: `portrait`):
 
-|                        | Single-page document    | Multi-page document                       |
-| ---------------------- | ----------------------- | ----------------------------------------- |
-| Request Path           | `/`                     | `/multiple`                               |
-| Request Method         | `POST`                  | `POST`                                    |
-| `Content-Type` header  | `text/html`             | `application/json`                        |
-| Request Body           | HTML content            | JSON array of strings containing HTML     |
-| Request Body (example) | `<h1>Hello World!</h1>` | `["<h1>Page 1</h2>", "<h1>Page 2</h1>" ]` |
+|                        | Single-page document    | Multi-page document                       | List of URLs to render    |
+| ---------------------- | ----------------------- | ----------------------------------------- | ------------------------- |
+| Request Path           | `/`                     | `/multiple`                               | `/urls`                   |
+| Request Method         | `POST`                  | `POST`                                    | `POST`                    |
+| `Content-Type` header  | `text/html`             | `application/json`                        | `text/plain`              |
+| Request Body           | HTML content            | JSON array of strings containing HTML     | One absolute URL per line |
+| Request Body (example) | `<h1>Hello World!</h1>` | `["<h1>Page 1</h2>", "<h1>Page 2</h1>" ]` | `https://google.com`      |
 
-Both methods handle the following query parameters:
+All endpoints handle the following query parameters:
 
 - `filename`: the name of the resulting PDF file (will automatically append the `.pdf` extension if absent)
-- `title`: the title of the resulting PDF if the provided html does not contain a <title> tag, falls back to filename without extension if provided
-- `singlePage`: create PDF with a single page containing all the content (not supported with `/multiple`)
-- all the options supported by [Puppeteer's page#pdf(\[options\])](https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagepdfoptions), except:
+- `onepage`: `true` to force the creation of a single (possibly gigantic) page for each individual URL or HTML document. If set, overrules `format` and `landscape`
+- all the [properties of the PDF Information Dictionary](https://www.verypdf.com/document/pdf-format-reference/pg_0844.htm), except `trapped`:
+  - `title`
+  - `author`
+  - `subject`
+  - `keywords` (you may provide several, e.g.: `?keywords=travelling&keywords=korea&keywords=beautiful`)
+  - `creator`
+  - `producer`
+  - `creationDate` (parsed as `ISO-8601`, e.g.: `2025-12-28`)
+  - `modDate` (parsed as `ISO-8601`, e.g.: `2025-12-28`)
+- all the options supported by [Puppeteer's `page#pdf(\[options\])`](https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagepdfoptions), except:
   - `path`
   - `headerTemplate`
   - `margin`
@@ -112,6 +145,14 @@ curl 'http://localhost:3000?format=a3&landscape=true' \
   -d '<html><body><h1>Hello World!</h1></body></html>'
 ```
 
+Specify Information Dictionary:
+
+```bash
+curl 'http://localhost:3000?author=ccjmne&title=Hello+World' \
+  -H 'Content-Type: text/html' \
+  -d '<html><body><h1>Hello World!</h1></body></html>'
+```
+
 Multi-page document:
 
 ```bash
@@ -121,6 +162,25 @@ curl 'http://localhost:3000/multiple' \
     "<html><body><h1>Hello World!</h1></body></html>",
     "This is the <strong>second</strong> page"
   ]'
+```
+
+Converting a Web page to PDF:
+
+```bash
+curl 'http://localhost:3000/url?onepage=true' \
+  -H 'Content-Type: text/plain' \
+  -d 'https://justinjackson.ca/webmaster/'
+```
+
+Converting several Web pages into a single PDF:
+
+```bash
+curl 'http://localhost:3000/url?onepage=true' \
+  -H 'Content-Type: text/plain' \
+  -d '
+    https://justinjackson.ca/webmaster/
+    https://ccjmne.sh/blog/
+  '
 ```
 
 ## Maintainer Notes
