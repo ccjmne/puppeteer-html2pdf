@@ -13,8 +13,12 @@ export default antfu({
     'style/no-floating-decimal': 'off',
     'no-sequences':              'off',
     'prefer-arrow-callback':     'off',
+    'prefer-template':           'off',
     'style/key-spacing':         ['warn', { align: 'value' }],
     'style/no-multi-spaces':     'off',
     'style/quotes':              ['warn', 'single', { avoidEscape: true }],
   },
+}, {
+  files: ['*.md'],
+  rules: { 'style/no-trailing-spaces': 'off' },
 })
