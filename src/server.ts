@@ -4,6 +4,7 @@ import process from 'node:process'
 import bodyParser from 'body-parser'
 import cors from 'cors'
 import express from 'express'
+import { homepage, name, version } from '../package.json'
 import { printHTML, printURLs } from './printer'
 
 const port = 3000
@@ -45,13 +46,13 @@ express()
 function parseRequest(query: Record<string, string>): { filename: `${string}.pdf`, cfg: PrinterConfig['cfg'] } {
   return {
     filename: (query.filename || 'document').replace(/(\.pdf)?$/, '.pdf') as `${string}.pdf`,
-    cfg:      Object.fromEntries(Object.entries(query).map(([k, v]) => {
+    cfg:      Object.assign({ producer: `${name} v${version} (${homepage})` }, Object.fromEntries(Object.entries(query).map(([k, v]) => {
       if (/* pptr#pdf: */ ['displayHeaderFooter', 'landscape', 'omitBackground', 'outline', 'preferCSSPageSize', 'printBackground', 'tagged', 'waitForFonts'].includes(k)) return [k, v === 'true']
       if (/* pptr#pdf: */ ['scale', 'timeout'].includes(k)) return [k, +v]
       if (/* infodict: */ ['keywords'].includes(k)) return [k, Array.isArray(v) ? v : [v]]
       if (/* infodict: */ ['creationDate', 'modDate'].includes(k)) return [k, new Date(v)]
       if (/* html2pdf: */ ['onepage'].includes(k)) return [k, v === 'true']
       return [k, v]
-    })),
+    }))),
   }
 }
