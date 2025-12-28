@@ -132,55 +132,61 @@ All endpoints handle the following query parameters:
 Single-page document, default settings (format: `A4`, orientation: `portrait`):
 
 ```bash
-curl 'http://localhost:3000' \
-  -H 'Content-Type: text/html' \
-  -d '<html><body><h1>Hello World!</h1></body></html>'
+curl 'http://localhost:3000'                           \
+  -H 'Content-Type: text/html'                         \
+  -d '<html><body><h1>Hello World!</h1></body></html>' \
+  > out.pdf && xdg-open out.pdf
 ```
 
 Single-page document (format: `A3`, orientation: `landscape`):
 
 ```bash
-curl 'http://localhost:3000?format=a3&landscape=true' \
-  -H 'Content-Type: text/html' \
-  -d '<html><body><h1>Hello World!</h1></body></html>'
+curl 'http://localhost:3000?format=a3&landscape=true'  \
+  -H 'Content-Type: text/html'                         \
+  -d '<html><body><h1>Hello World!</h1></body></html>' \
+  > out.pdf && xdg-open out.pdf
 ```
 
 Specify Information Dictionary:
 
 ```bash
 curl 'http://localhost:3000?author=ccjmne&title=Hello+World' \
-  -H 'Content-Type: text/html' \
-  -d '<html><body><h1>Hello World!</h1></body></html>'
+  -H 'Content-Type: text/html'                               \
+  -d '<html><body><h1>Hello World!</h1></body></html>'       \
+  > out.pdf && xdg-open out.pdf
 ```
 
 Multi-page document:
 
 ```bash
-curl 'http://localhost:3000/multiple' \
-  -H 'Content-Type: application/json' \
+curl 'http://localhost:3000/multiple'                  \
+  -H 'Content-Type: application/json'                  \
   -d '[
     "<html><body><h1>Hello World!</h1></body></html>",
     "This is the <strong>second</strong> page"
-  ]'
+  ]'                                                   \
+  > out.pdf && xdg-open out.pdf
 ```
 
 Converting a Web page to PDF:
 
 ```bash
 curl 'http://localhost:3000/url?onepage=true' \
-  -H 'Content-Type: text/plain' \
-  -d 'https://justinjackson.ca/webmaster/'
+  -H 'Content-Type: text/plain'               \
+  -d 'https://justinjackson.ca/webmaster/'    \
+  > out.pdf && xdg-open out.pdf
 ```
 
 Converting several Web pages into a single PDF:
 
 ```bash
 curl 'http://localhost:3000/url?onepage=true' \
-  -H 'Content-Type: text/plain' \
+  -H 'Content-Type: text/plain'               \
   -d '
     https://justinjackson.ca/webmaster/
     https://ccjmne.sh/blog/
-  '
+  '                                           \
+  > out.pdf && xdg-open out.pdf
 ```
 
 ## Maintainer Notes
