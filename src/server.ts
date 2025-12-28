@@ -10,29 +10,29 @@ const port = 3000
 const limit = process.env.BODY_LIMIT || '1mb'
 
 express()
+  .use(cors())
   .use(express.json({ limit }))
   .use(bodyParser.text({ type: 'text/html', limit }))
   .use(bodyParser.text({ type: 'text/plain', limit }))
 
   // Accepts a single HTML document in the body
-  .post('/', cors(), async (req: Request, res: Response) => {
+  .post('/', async (req: Request, res: Response) => {
     const { filename, cfg } = parseRequest(req.query as Record<string, string>)
     res.attachment(filename).send(await printHTML({ cfg, data: [req.body as string] }))
   })
 
   // Accepts a list of URLs in the body
-  .post('/url', cors(), async (req: Request, res: Response) => {
+  .post('/url', async (req: Request, res: Response) => {
     const { filename, cfg } = parseRequest(req.query as Record<string, string>)
     res.attachment(filename).send(await printURLs({ cfg, data: (req.body as string).split(/\n/).filter(({ length }) => length) }))
   })
 
   // Accepts multiple HTML documents in the body as a JSON array of strings
-  .post('/multiple', cors(), async (req: Request, res: Response) => {
+  .post('/multiple', async (req: Request, res: Response) => {
     const { filename, cfg } = parseRequest(req.query as Record<string, string>)
     res.attachment(filename).send(await printHTML({ cfg, data: req.body as string[] }))
   })
 
-  .options('/{*anything}', cors())
   .listen(port, (err?: Error) => {
     if (err) return console.error('ERROR: ', err)
     console.log(`HTML-to-PDF converter listening on port: ${port}`)
