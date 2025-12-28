@@ -103,7 +103,7 @@ Single-page document, default settings (format: `A4`, orientation: `portrait`):
 
 |                        | Single-page document    | Multi-page document                       | List of URLs to render    |
 | ---------------------- | ----------------------- | ----------------------------------------- | ------------------------- |
-| Request Path           | `/`                     | `/multiple`                               | `/urls`                   |
+| Request Path           | `/`                     | `/multiple`                               | `/url`                    |
 | Request Method         | `POST`                  | `POST`                                    | `POST`                    |
 | `Content-Type` header  | `text/html`             | `application/json`                        | `text/plain`              |
 | Request Body           | HTML content            | JSON array of strings containing HTML     | One absolute URL per line |
