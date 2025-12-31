@@ -1,7 +1,7 @@
 {
   "name": "puppeteer-html2pdf",
   "type": "module",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "description": "Print your HTML to PDF via Puppeteer in a Docker container",
   "author": "Éric NICOLAS <ccjmne@gmail.com> (ccjmne)",
   "license": "MIT",
