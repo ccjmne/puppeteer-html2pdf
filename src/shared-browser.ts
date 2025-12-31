@@ -3,8 +3,10 @@ import process from 'node:process'
 import puppeteer from 'puppeteer-core'
 import { BehaviorSubject, firstValueFrom, from, Observable, of, Subject } from 'rxjs'
 import { delay, distinctUntilChanged, filter, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators'
+import argv from 'string-argv'
 import which from 'which'
 
+const args = argv(process.env.CHROMIUM_ARGS || '--disable-web-security --no-sandbox --disable-setuid-sandbox')
 const keepalive = +(process.env.BROWSER_KEEPALIVE || '30000')
 const executablePath = process.env.BROWSER_EXECUTABLE || ['chrome-headless-shell', 'chromium', 'chromium-browser', 'google-chrome-stable', 'google-chrome']
   .map(name => which.sync(name, { nothrow: true }))
@@ -22,11 +24,7 @@ const browser$ = (function sharedBrowser(): Observable<Browser> {
       return requested
         ? from(puppeteer.launch({
             executablePath,
-            args: [
-              '--disable-web-security', // Circumvent hypermodern CORS policies even w/ local file://
-              '--no-sandbox',
-              '--disable-setuid-sandbox',
-            ],
+            args,
             headless: true,
           }))
         : of(null).pipe(delay(keepalive), tap(() => instance?.close()))
