@@ -41,10 +41,11 @@ curl localhost:3000 -H 'Content-Type: text/html' --data '
 
 ## Docker Environment Variables
 
-| Name              | Description                                                                                                               | Default Value |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| BODY_LIMIT        | Maximum request body size. Passed on to [body-parser](https://github.com/expressjs/body-parser#limit) and `express.json`. | `1mb`         |
-| BROWSER_KEEPALIVE | Period (in ms) of inactivity after which the shared browser instance is shut down.                                        | `30000` (30s) |
+| Name              | Description                                                                                                               | Default Value                                                  |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| BODY_LIMIT        | Maximum request body size. Passed on to [body-parser](https://github.com/expressjs/body-parser#limit) and `express.json`. | `1mb`                                                          |
+| BROWSER_KEEPALIVE | Period (in ms) of inactivity after which the shared browser instance is shut down.                                        | `30000` (30s)                                                  |
+| CHROMIUM_ARGS     | Flags to be passed to the underlying Chromium instance.                                                                   | `--disable-web-security --no-sandbox --disable-setuid-sandbox` |
 
 ## Setting PDF Information Dictionary
 
